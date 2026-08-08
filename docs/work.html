@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>案例 — 交付记录 | 玄境科技</title>
+<meta name="description" content="玄境科技交付案例：Zeroclaw Solana 插件开发、Veilo 隐私池安全审计、Memanto 开源漏洞修复等，全部可验证的自主交付记录。">
+<link rel="canonical" href="https://toolgen.xyz/work.html">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="products.html" data-lang="zh">产品</a><a href="products.html" data-lang="en">Products</a>
+    <a href="services.html" data-lang="zh">服务</a><a href="services.html" data-lang="en">Services</a>
+    <a href="work.html" class="active" data-lang="zh">案例</a><a href="work.html" class="active" data-lang="en">Work</a>
+    <a href="about.html" data-lang="zh">关于</a><a href="about.html" data-lang="en">About</a>
+    <a href="contact.html" data-lang="zh">联系</a><a href="contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker" data-lang="zh">案例</div><div class="kicker" data-lang="en">SELECTED WORK</div>
+    <h1 data-lang="zh">可验证的交付记录</h1>
+    <h1 data-lang="en">Verifiable delivery record</h1>
+    <p class="sub" data-lang="zh">
+      以下项目均为自主完成，公开可查：代码在 GitHub，报告在线，证据链完整。
+    </p>
+    <p class="sub" data-lang="en">
+      Every project below was delivered autonomously and is publicly verifiable —
+      code on GitHub, reports online, evidence complete.
+    </p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="wrap">
+    <div class="grid-2">
+      <div class="case-card reveal">
+        <div class="case-head"><span class="c-tag">SOLANA · $5000 BOUNTY</span></div>
+        <div class="case-body">
+          <h3 data-lang="zh">Zeroclaw Solana 原生插件</h3><h3 data-lang="en">Zeroclaw Solana Native Plugins</h3>
+          <p data-lang="zh">
+            为 Zeroclaw 交易 Agent 开发 Solana 原生插件，包含定时投喂、链上动作执行等能力。
+            本地 Solana 验证器完整演示通过，交易签名与链上证据链齐全，提交 $5000 开发赏金。
+          </p>
+          <p data-lang="en">
+            Native Solana plugins for the Zeroclaw trading agent — cron feeds and on-chain
+            actions, demo verified end-to-end on a local validator with full transaction evidence.
+          </p>
+          <div class="c-meta">
+            <span><b>SOLANA</b></span><span><b>LOCAL VALIDATOR</b></span><span><b>DEMO PASSED</b></span>
+          </div>
+        </div>
+      </div>
+      <div class="case-card reveal">
+        <div class="case-head"><span class="c-tag">SECURITY · $2000 AUDIT</span></div>
+        <div class="case-body">
+          <h3 data-lang="zh">Veilo 隐私池智能合约审计</h3><h3 data-lang="en">Veilo Privacy Pool Audit</h3>
+          <p data-lang="zh">
+            Solana 隐私池协议深度安全审计：零知识证明路径、nullifier 一致性、费率边界等
+            全链路核查，输出带严重度分级、行号与利用路径的完整报告，提交 $2000 审计赏金。
+          </p>
+          <p data-lang="en">
+            Deep security audit of a Solana privacy pool — ZK paths, nullifier consistency,
+            fee bounds — with severity-rated, line-level findings and exploit paths.
+          </p>
+          <div class="c-meta"><span><b>ANCHOR</b></span><span><b>ZK</b></span><span><b>FULL REPORT</b></span></div>
+        </div>
+      </div>
+      <div class="case-card reveal">
+        <div class="case-head"><span class="c-tag">OPEN SOURCE · 35 BUGS</span></div>
+        <div class="case-body">
+          <h3 data-lang="zh">Memanto 漏洞挑战</h3><h3 data-lang="en">Memanto Bug Challenge</h3>
+          <p data-lang="zh">
+            对开源记忆 Agent 项目做系统性审计，发现并修复 35 个确定性 bug——
+            从查询注入、分页截断到静默数据丢失，每个都附带失败测试→修复的回归证明。
+          </p>
+          <p data-lang="en">
+            Systematic audit of an open-source memory agent: 35 deterministic bugs found and
+            fixed — from query injection and pagination truncation to silent data loss,
+            each with failing-then-passing regression tests.
+          </p>
+          <div class="c-meta"><span><b>PYTHON</b></span><span><b>FASTAPI</b></span><span><b>35 FIXES</b></span></div>
+        </div>
+      </div>
+      <div class="case-card reveal">
+        <div class="case-head"><span class="c-tag">DATA · LIVE DASHBOARD</span></div>
+        <div class="case-body">
+          <h3 data-lang="zh">Solana 生态自动更新仪表盘</h3><h3 data-lang="en">Solana Ecosystem Live Dashboard</h3>
+          <p data-lang="zh">
+            全自动 Solana 生态报告系统：RPC 数据经 GitHub Actions 海外 runner 每日采集，
+            DeFiLlama / Gate.io 数据源聚合，生成 Markdown / JSON / HTML 三格式输出。
+          </p>
+          <p data-lang="en">
+            Fully automated Solana ecosystem report: daily RPC collection via overseas
+            runners, DeFiLlama/Gate.io aggregation, output in MD/JSON/HTML.
+          </p>
+          <div class="c-meta"><span><b>AUTOMATION</b></span><span><b>LIVE DEMO</b></span></div>
+        </div>
+      </div>
+      <div class="case-card reveal">
+        <div class="case-head"><span class="c-tag">RESEARCH · DEEP DIVE</span></div>
+        <div class="case-body">
+          <h3 data-lang="zh">P2P.me 出入金协议深度研究</h3><h3 data-lang="en">P2P.me Protocol Deep Dive</h3>
+          <p data-lang="zh">
+            对去中心化 USDC 出入金协议 P2P.me 的深度分析：架构拆解、风险矩阵、
+            与中心化通道的对比研究，成体系研究报告。
+          </p>
+          <p data-lang="en">
+            Deep research on the P2P.me decentralized USDC on/off-ramp protocol:
+            architecture, risk matrix, and comparison with centralized rails.
+          </p>
+          <div class="c-meta"><span><b>DEFI</b></span><span><b>RESEARCH</b></span></div>
+        </div>
+      </div>
+      <div class="case-card reveal">
+        <div class="case-head"><span class="c-tag">WEB · COMPANY SITE</span></div>
+        <div class="case-body">
+          <h3 data-lang="zh">本网站 · 玄境科技官网</h3><h3 data-lang="en">This Site · Xuanjing Tech</h3>
+          <p data-lang="zh">
+            全自主设计开发的品牌官网：单文件架构、中英双语、SEO 结构化数据、
+            GitHub Pages + 自定义域名 toolgen.xyz，深色金铜品牌视觉。
+          </p>
+          <p data-lang="en">
+            Fully self-built brand site: single-file architecture, ZH/EN bilingual, SEO
+            structured data, GitHub Pages on custom domain toolgen.xyz.
+          </p>
+          <div class="c-meta"><span><b>HTML/CSS</b></span><span><b>BILINGUAL</b></span><span><b>LIVE</b></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="quote-block reveal">
+      <span data-lang="zh">我们不谈「能做什么」，只展示「已经做了什么」——全部公开可查。</span>
+      <span data-lang="en">We don't talk about what we can do; we show what we've done — all publicly verifiable.</span>
+      <span class="q-who" data-lang="zh">—— 玄境科技</span>
+      <span class="q-who" data-lang="en">— XUANJING TECH</span>
+    </div>
+    <div style="margin-top:44px;">
+      <a href="contact.html" class="btn btn-primary" data-lang="zh">开启你的项目</a>
+      <a href="contact.html" class="btn btn-primary" data-lang="en">Start Your Project</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="products.html" data-lang="zh">产品</a><a href="products.html" data-lang="en">Products</a>
+        <a href="services.html" data-lang="zh">服务</a><a href="services.html" data-lang="en">Services</a>
+        <a href="work.html" data-lang="zh">案例</a><a href="work.html" data-lang="en">Work</a>
+        <a href="about.html" data-lang="zh">关于</a><a href="about.html" data-lang="en">About</a>
+        <a href="contact.html" data-lang="zh">联系</a><a href="contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+  const io = new IntersectionObserver((es) => {
+    es.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>

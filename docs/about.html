@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>关于 — 玄境科技 | AI Agent 驱动的一人科技公司</title>
+<meta name="description" content="玄境科技：注册于上海嘉定的一人科技有限公司，以全 AI Agent 团队运作。了解我们的理念、团队架构与使命。">
+<link rel="canonical" href="https://toolgen.xyz/about.html">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="products.html" data-lang="zh">产品</a><a href="products.html" data-lang="en">Products</a>
+    <a href="services.html" data-lang="zh">服务</a><a href="services.html" data-lang="en">Services</a>
+    <a href="work.html" data-lang="zh">案例</a><a href="work.html" data-lang="en">Work</a>
+    <a href="about.html" class="active" data-lang="zh">关于</a><a href="about.html" class="active" data-lang="en">About</a>
+    <a href="contact.html" data-lang="zh">联系</a><a href="contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker" data-lang="zh">关于</div><div class="kicker" data-lang="en">ABOUT</div>
+    <h1 data-lang="zh">一家「一个人」的科技公司</h1>
+    <h1 data-lang="en">A one-person tech company</h1>
+    <p class="sub" data-lang="zh">
+      玄境科技，注册于上海嘉定。没有庞大的办公室，没有臃肿的层级——
+      只有一位创始人，和一群各司其职的 AI Agent。
+    </p>
+    <p class="sub" data-lang="en">
+      Xuanjing Tech, registered in Jiading, Shanghai. No sprawling offices,
+      no bloated hierarchy — one founder and a fleet of specialized AI agents.
+    </p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="wrap">
+    <div class="kicker" data-lang="zh">理念</div><div class="kicker" data-lang="en">PHILOSOPHY</div>
+    <h2 class="section-title" data-lang="zh">为什么是「一个人 + 一群 Agent」</h2>
+    <h2 class="section-title" data-lang="en">Why one person plus a fleet of agents</h2>
+    <div class="prose">
+      <p data-lang="zh">
+        传统软件公司的成本结构中，大部分开销花在沟通与协调上：会议、评审、需求转述、
+        跨部门扯皮。一个人 + 一群 Agent 的结构，把这些成本压缩到几乎为零——
+        Agent 之间以结构化协议协作，决策链路短，执行速度快。
+      </p>
+      <p data-lang="en">
+        In a traditional software company, most costs go to communication and
+        coordination: meetings, reviews, requirement hand-offs, cross-team friction.
+        One person plus a fleet of agents compresses those costs to nearly zero —
+        agents collaborate through structured protocols, decision chains are short,
+        and execution is fast.
+      </p>
+      <p data-lang="zh">
+        这并不意味着降低标准。恰恰相反：因为每个环节都由专职 Agent 负责，
+        需求分析、编码、测试、审查各司其职，质量反而更可控。我们交付的不是
+        「更快更便宜」，而是「更快、更便宜、且更可靠」。
+      </p>
+      <p data-lang="en">
+        This doesn't mean lower standards — quite the opposite. Because every stage
+        has a dedicated agent (analysis, coding, testing, review), quality is more
+        controllable, not less. We don't deliver "faster and cheaper"; we deliver
+        "faster, cheaper, and more reliable."
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="kicker" data-lang="zh">架构</div><div class="kicker" data-lang="en">STRUCTURE</div>
+    <h2 class="section-title" data-lang="zh">团队如何运作</h2>
+    <h2 class="section-title" data-lang="en">How the team works</h2>
+    <div class="grid-3">
+      <div class="card reveal">
+        <div class="num">ROLE 01</div>
+        <h3 data-lang="zh">产品与决策</h3><h3 data-lang="en">Product & Decisions</h3>
+        <p data-lang="zh">唯一的人类成员：定方向、做决策、验收结果。</p>
+        <p data-lang="en">The sole human: sets direction, makes decisions, accepts results.</p>
+      </div>
+      <div class="card reveal">
+        <div class="num">ROLE 02</div>
+        <h3 data-lang="zh">Agent 军团</h3><h3 data-lang="en">The Agent Fleet</h3>
+        <p data-lang="zh">需求分析师、架构师、开发者、测试工程师、审查员——各自专职，并行协作。</p>
+        <p data-lang="en">Analysts, architects, developers, testers, reviewers — each specialized, working in parallel.</p>
+      </div>
+      <div class="card reveal">
+        <div class="num">ROLE 03</div>
+        <h3 data-lang="zh">流水线与工具</h3><h3 data-lang="en">Pipelines & Tools</h3>
+        <p data-lang="zh">自动化测试、CI/CD、监控告警——质量关卡嵌入每个环节。</p>
+        <p data-lang="en">Automated tests, CI/CD, monitoring — quality gates embedded at every stage.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="kicker" data-lang="zh">公司</div><div class="kicker" data-lang="en">COMPANY</div>
+    <h2 class="section-title" data-lang="zh">基本信息</h2>
+    <h2 class="section-title" data-lang="en">Company facts</h2>
+    <table class="tbl reveal">
+      <tr><th data-lang="zh">项目</th><th data-lang="en">ITEM</th><th data-lang="zh">信息</th><th data-lang="en">DETAIL</th></tr>
+      <tr><td data-lang="zh">公司名称</td><td data-lang="en">Name</td><td data-lang="zh">玄境科技（注册中）</td><td data-lang="en">Xuanjing Tech (incorporating)</td></tr>
+      <tr><td data-lang="zh">类型</td><td data-lang="en">Type</td><td data-lang="zh">一人有限公司</td><td data-lang="en">Single-member LLC</td></tr>
+      <tr><td data-lang="zh">所在地</td><td data-lang="en">Location</td><td data-lang="zh">上海 · 嘉定</td><td data-lang="en">Jiading, Shanghai</td></tr>
+      <tr><td data-lang="zh">核心模式</td><td data-lang="en">Model</td><td data-lang="zh">全 AI Agent 团队</td><td data-lang="en">Full AI-agent team</td></tr>
+      <tr><td data-lang="zh">主营</td><td data-lang="en">Focus</td><td data-lang="zh">软件开发 / AI Agent / 安全审计</td><td data-lang="en">Software / AI agents / Security audits</td></tr>
+      <tr><td data-lang="zh">官网</td><td data-lang="en">Web</td><td>toolgen.xyz</td><td>toolgen.xyz</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="quote-block reveal">
+      <span data-lang="zh">「玄」是未知之境，「境」是抵达之处。我们用 AI 抵达软件交付的未知之境。</span>
+      <span data-lang="en">"Xuan" is the unknown; "Jing" is the destination. We use AI to reach software delivery's unknown frontiers.</span>
+      <span class="q-who" data-lang="zh">—— 玄境科技 · 名字的由来</span>
+      <span class="q-who" data-lang="en">— THE NAME BEHIND XUANJING TECH</span>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="products.html" data-lang="zh">产品</a><a href="products.html" data-lang="en">Products</a>
+        <a href="services.html" data-lang="zh">服务</a><a href="services.html" data-lang="en">Services</a>
+        <a href="work.html" data-lang="zh">案例</a><a href="work.html" data-lang="en">Work</a>
+        <a href="about.html" data-lang="zh">关于</a><a href="about.html" data-lang="en">About</a>
+        <a href="contact.html" data-lang="zh">联系</a><a href="contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+  const io = new IntersectionObserver((es) => {
+    es.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>
