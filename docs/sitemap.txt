@@ -2,5 +2,8 @@ https://toolgen.xyz/
 https://toolgen.xyz/products.html
 https://toolgen.xyz/services.html
 https://toolgen.xyz/work.html
+https://toolgen.xyz/blog.html
+https://toolgen.xyz/blog/ai-agent-bug-hunting.html
+https://toolgen.xyz/blog/github-actions-content-pipeline.html
 https://toolgen.xyz/about.html
 https://toolgen.xyz/contact.html

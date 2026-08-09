@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agent 批量修复开源项目漏洞：35 个 bug 的实战复盘 | 玄境科技知识库</title>
+<meta name="description" content="用 3 个并行审计 Agent 扫描 FastAPI 项目、从候选 bug 中筛出确定性问题、按 bounty 规则合并提交的完整方法论。附可复制的审计检查单。">
+<meta property="og:title" content="AI Agent 批量修复开源项目漏洞：35 个 bug 的实战复盘">
+<meta property="og:description" content="并行审计 Agent + 失败测试验证 + 合并提交策略的完整复盘">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-08</div>
+    <h1 data-lang="zh">AI Agent 批量修复开源项目漏洞：35 个 bug 的实战复盘</h1>
+    <h1 data-lang="en">AI-agent bug hunting at scale: a 35-bug post-mortem</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #AI Agent #安全审计 #FastAPI #测试驱动
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      <h2>背景</h2>
+      <p>
+        一个开源项目发布安全赏金：找到 bug，提交 PR 附可复现测试，按有效 bug 数结算。
+        目标仓库是一个 FastAPI 写的记忆系统（Python 3.10+）。我们采用
+        「3 个并行审计 Agent + 主代理人工复核」的策略，最终发现并修复 35 个确定性 bug。
+        这篇复盘记录方法论，可直接复制到类似任务。
+      </p>
+
+      <h2>策略：并行 Agent 分片扫描</h2>
+      <p>把仓库按模块域切成三片，每片交给一个独立审计 Agent：</p>
+      <ul>
+        <li><strong>Agent A</strong>：核心服务层（session / memory 读写 / 导出 / 摘要聚合）</li>
+        <li><strong>Agent B</strong>：CLI 命令与配置（参数校验、路径处理、错误码）</li>
+        <li><strong>Agent C</strong>：集成层（MCP / LangGraph / UI 路由 / legacy 代码）</li>
+      </ul>
+      <p>
+        每份任务书明确要求：只报告「能写失败测试」的确定性 bug，并给出
+        <strong>文件 + 行号 + 代码片段 + 为什么是 bug + 最小复现思路</strong>。
+        这样把模糊的「看看有没有问题」变成可验证的交付物。
+      </p>
+
+      <h2>筛选：从候选到确定</h2>
+      <p>
+        三个 Agent 共报告约 17 个候选。我们不是直接照单全收，而是按三条标准筛：
+      </p>
+      <ul>
+        <li><strong>确定性</strong>：能否写出稳定复现的失败测试？不能=不报。</li>
+        <li><strong>是否已报过</strong>：同类 bug 前几轮已修的不重复（query 注入、分页截断、路径穿越等）。</li>
+        <li><strong>影响面</strong>：静默数据丢失 &gt; 崩溃 &gt; 体验问题。</li>
+      </ul>
+      <p>最终锁定 7 个高价值 bug，全部先写红牌测试确认失败，再修复转绿。</p>
+
+      <h2>最有价值的几类 bug</h2>
+      <p>复盘时我们给 bug 按「真实危害」排了序，这里挑三类典型：</p>
+
+      <h3>1. 截断方向错误：丢了最新的消息</h3>
+      <p>
+        对话记忆提取函数从最旧的消息开始累加字符，超过上限就 break——
+        结果超长对话里<strong>最新消息（本次要记的内容）全被丢弃</strong>，
+        喂给 LLM 的 query 反而是旧消息。极端情况单条消息超限直接返回空串报 400。
+        正确做法：从尾部保留最新，必要时截断头部。
+      </p>
+
+      <h3>2. 归档时间错位：今天的记录永远消失</h3>
+      <p>
+        session 摘要文件按「记忆的 created_at」归档，而 daily summary 按「今天」聚合。
+        导入一条旧数据（created_at 是过去），它的摘要被写进历史文件，今天的日报永远读不到——
+        <strong>静默数据丢失</strong>。修复：按写入时间归档。
+      </p>
+
+      <h3>3. 假成功：CLI 报告 OK 但 token 已过期</h3>
+      <p>
+        <code>--hours 0</code> 生成「立即过期」的会话，CLI 却打印激活成功。
+        参数校验缺失（服务层无 &gt;0 检查）。修复：服务层 fail-closed + CLI 层 min=1。
+      </p>
+
+      <h2>协作教训：一个 bounty 一个 PR</h2>
+      <p>
+        我们最初把不同轮次的 bug 拆成多个 PR 提交，维护者批量关闭，明确要求
+        <strong>「一个 bounty 一个 PR，多个 bug 放同一个 PR」</strong>。
+        整改：把所有轮次的修复合并进唯一存活的 PR，强推更新，冲突逐个解决。
+        这是赏金任务最容易踩的坑——先读清规则再动手。
+      </p>
+
+      <h2>可复制的审计检查单</h2>
+      <p>这份清单从实战中提炼，适用于任何 Python/FastAPI 项目的首轮审计：</p>
+      <ul>
+        <li>时间处理：naive/aware datetime 混用、时区错位、归档日期与聚合日期不一致</li>
+        <li>截断方向：保留的是旧的还是新的？超限时是丢数据还是显式失败？</li>
+        <li>异常吞噬：except Exception 后是否静默返回「成功」？有没有假成功路径？</li>
+        <li>参数校验：负数/零/超长/None 是否有 fail-closed 检查？</li>
+        <li>边界循环：for 循环迭代 dict 的 key 而不是 values？列表为空时的行为？</li>
+        <li>返回契约：API 返回 envelope dict，调用方是否按裸列表迭代？</li>
+      </ul>
+
+      <h2>结果</h2>
+      <p>
+        35 个 bug 全部附带「失败测试→修复→全量回归通过」的证据链合并提交。
+        全程没有任何代码在本地之外执行，所有验证都在真实环境跑通。
+        这套流程的价值在于：AI Agent 负责扫描与初筛，人类（或主代理）负责
+        验证与决策——各司其职，速度与可靠性兼得。
+      </p>
+
+      <div class="quote-block">
+        给 Agent 的任务书，要具体到「能写失败测试」才算合格；给维护者的 PR，
+        要具体到「红→绿证据链」才算专业。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知识库 — 技术文章与实战复盘 | 玄境科技</title>
+<meta name="description" content="玄境科技知识库：AI Agent 实战、开源漏洞审计、自动化流水线、Solana 开发等一线技术文章，全部来自真实项目经验。">
+<meta property="og:title" content="知识库 — 技术文章与实战复盘 | 玄境科技">
+<meta property="og:description" content="AI Agent 实战、开源漏洞审计、自动化流水线——一线技术文章">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://toolgen.xyz/blog.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog.html">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="products.html" data-lang="zh">产品</a><a href="products.html" data-lang="en">Products</a>
+    <a href="services.html" data-lang="zh">服务</a><a href="services.html" data-lang="en">Services</a>
+    <a href="work.html" data-lang="zh">案例</a><a href="work.html" data-lang="en">Work</a>
+    <a href="blog.html" class="active" data-lang="zh">知识库</a><a href="blog.html" class="active" data-lang="en">Blog</a>
+    <a href="about.html" data-lang="zh">关于</a><a href="about.html" data-lang="en">About</a>
+    <a href="contact.html" data-lang="zh">联系</a><a href="contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker" data-lang="zh">知识库</div><div class="kicker" data-lang="en">KNOWLEDGE BASE</div>
+    <h1 data-lang="zh">从实战中沉淀的技术内容</h1>
+    <h1 data-lang="en">Technical content from real projects</h1>
+    <p class="sub" data-lang="zh">
+      没有理论空谈，只有一线项目的复盘：AI Agent 协作、开源漏洞审计、自动化流水线、Solana 开发。
+      每一篇都来自真实交付。
+    </p>
+    <p class="sub" data-lang="en">
+      No theory for theory's sake — every article is a post-mortem from real deliveries:
+      AI-agent collaboration, open-source audits, automation pipelines, Solana development.
+    </p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="wrap">
+    <div class="grid-2">
+      <article class="card reveal">
+        <div class="num">ARTICLE 01 · AI AGENT</div>
+        <h3>AI Agent 批量修复开源项目漏洞：35 个 bug 的实战复盘</h3>
+        <p style="color:var(--paper-1);font-size:14.5px;line-height:1.9;">
+          一次真实的安全赏金任务复盘：如何用 3 个并行审计 Agent 扫描一个 FastAPI 项目，
+          从 17 个候选 bug 中筛出 7 个可写失败测试的确定性问题，再到"一个 bounty 一个 PR"的
+          合并策略。包含完整的筛选方法论和可复制的审计检查单。
+        </p>
+        <div style="margin-top:20px;">
+          <a href="blog/ai-agent-bug-hunting.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="zh">阅读全文</a>
+          <a href="blog/ai-agent-bug-hunting.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="en">Read</a>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="num">ARTICLE 02 · AUTOMATION</div>
+        <h3>GitHub Actions 自动化内容流水线：从零搭建</h3>
+        <p style="color:var(--paper-1);font-size:14.5px;line-height:1.9;">
+          本网站自身的实战：如何用 GitHub Actions 每周自动更新时间戳、提交 IndexNow
+          通知搜索引擎、在海外 runner 上跑被墙的定时任务。附完整 workflow 配置与排错记录。
+        </p>
+        <div style="margin-top:20px;">
+          <a href="blog/github-actions-content-pipeline.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="zh">阅读全文</a>
+          <a href="blog/github-actions-content-pipeline.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="en">Read</a>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="num">ARTICLE 03 · SOLANA</div>
+        <h3>Solana 生态数据自动化采集：RPC 与第三方数据源聚合实践</h3>
+        <p style="color:var(--paper-1);font-size:14.5px;line-height:1.9;">
+          如何在受限网络环境下用 GitHub Actions 海外 runner 每日采集 Solana RPC 数据，
+          聚合 DeFiLlama / Gate.io 数据源，输出 Markdown / JSON / HTML 三格式报告。
+        </p>
+        <div style="margin-top:20px;">
+          <a href="blog/solana-data-automation.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="zh">阅读全文</a>
+          <a href="blog/solana-data-automation.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="en">Read</a>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="num">ARTICLE 04 · SECURITY</div>
+        <h3>智能合约审计方法论：从代码到利用路径</h3>
+        <p style="color:var(--paper-1);font-size:14.5px;line-height:1.9;">
+          一次 Solana 隐私池审计的完整思路：零知识证明路径、nullifier 一致性、
+          费率边界、权限模型。如何输出"严重度分级 + 行号 + 利用路径"的专业报告。
+        </p>
+        <div style="margin-top:20px;">
+          <a href="blog/smart-contract-audit-methodology.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="zh">阅读全文</a>
+          <a href="blog/smart-contract-audit-methodology.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="en">Read</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="products.html" data-lang="zh">产品</a><a href="products.html" data-lang="en">Products</a>
+        <a href="services.html" data-lang="zh">服务</a><a href="services.html" data-lang="en">Services</a>
+        <a href="work.html" data-lang="zh">案例</a><a href="work.html" data-lang="en">Work</a>
+        <a href="blog.html" data-lang="zh">知识库</a><a href="blog.html" data-lang="en">Blog</a>
+        <a href="about.html" data-lang="zh">关于</a><a href="about.html" data-lang="en">About</a>
+        <a href="contact.html" data-lang="zh">联系</a><a href="contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+  const io = new IntersectionObserver((es) => {
+    es.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>
