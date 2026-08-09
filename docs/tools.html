@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>免费在线工具 — 干支纪年查询 · 节气查询 | 玄境科技</title>
+<meta name="description" content="免费在线易学工具：公历转干支纪年、干支纪日、干支纪时、生肖五行、二十四节气查询。精确计算，无需注册，完全免费。">
+<meta property="og:title" content="免费在线工具 — 干支纪年查询 · 节气查询 | 玄境科技">
+<meta property="og:description" content="公历转干支、生肖五行、二十四节气——免费在线工具">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://toolgen.xyz/tools.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/tools.html">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
+<link rel="stylesheet" href="style.css">
+<style>
+.toolbox { border: 1px solid var(--line-0); border-radius: 4px; padding: 44px 40px; background: linear-gradient(160deg, rgba(212,175,106,0.05), transparent 60%), var(--ink-1); max-width: 720px; }
+.toolbox label { display: block; font-family: var(--mono); font-size: 12px; color: var(--gold-0); letter-spacing: 0.2em; margin-bottom: 10px; }
+.toolbox input[type="date"] {
+  width: 100%; padding: 14px 18px; font-size: 16px; font-family: var(--sans);
+  background: var(--ink-2); border: 1px solid var(--line-1); color: var(--paper-0);
+  border-radius: 3px; outline: none; transition: border-color 0.2s;
+}
+.toolbox input[type="date"]:focus { border-color: var(--gold-0); }
+.toolbox select {
+  width: 100%; padding: 14px 18px; font-size: 16px; font-family: var(--sans);
+  background: var(--ink-2); border: 1px solid var(--line-1); color: var(--paper-0);
+  border-radius: 3px; outline: none; margin-top: 20px;
+}
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.result-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 32px; }
+.r-item { border: 1px solid var(--line-0); border-radius: 4px; padding: 20px 22px; background: var(--ink-2); }
+.r-item .r-lbl { font-family: var(--mono); font-size: 11px; color: var(--paper-2); letter-spacing: 0.2em; margin-bottom: 8px; }
+.r-item .r-val { font-family: var(--serif); font-size: 24px; color: var(--gold-1); }
+.r-item .r-sub { font-size: 13px; color: var(--paper-2); margin-top: 6px; }
+.solar-terms { margin-top: 40px; }
+.solar-terms h3 { font-family: var(--serif); font-size: 20px; margin-bottom: 16px; color: var(--paper-0); }
+.terms-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.term-chip { border: 1px solid var(--line-0); border-radius: 3px; padding: 10px 8px; text-align: center; background: var(--ink-1); }
+.term-chip .t-name { font-family: var(--serif); font-size: 15px; color: var(--paper-0); }
+.term-chip .t-date { font-family: var(--mono); font-size: 11px; color: var(--paper-2); margin-top: 4px; }
+.term-chip.active { border-color: var(--gold-0); background: rgba(212,175,106,0.08); }
+.term-chip.active .t-name { color: var(--gold-1); }
+.note { font-size: 12.5px; color: var(--paper-2); margin-top: 16px; line-height: 1.8; }
+@media (max-width: 560px) { .row-2, .result-grid { grid-template-columns: 1fr; } .terms-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="products.html" data-lang="zh">产品</a><a href="products.html" data-lang="en">Products</a>
+    <a href="services.html" data-lang="zh">服务</a><a href="services.html" data-lang="en">Services</a>
+    <a href="work.html" data-lang="zh">案例</a><a href="work.html" data-lang="en">Work</a>
+    <a href="tools.html" class="active" data-lang="zh">工具</a><a href="tools.html" class="active" data-lang="en">Tools</a>
+    <a href="blog.html" data-lang="zh">知识库</a><a href="blog.html" data-lang="en">Blog</a>
+    <a href="about.html" data-lang="zh">关于</a><a href="about.html" data-lang="en">About</a>
+    <a href="contact.html" data-lang="zh">联系</a><a href="contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="tools.html" onclick="closeMenu()" data-lang="zh">工具</a><a href="tools.html" onclick="closeMenu()" data-lang="en">Tools</a>
+  <a href="blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker" data-lang="zh">工具</div><div class="kicker" data-lang="en">FREE TOOLS</div>
+    <h1 data-lang="zh">免费在线易学工具</h1>
+    <h1 data-lang="en">Free online metaphysics tools</h1>
+    <p class="sub" data-lang="zh">
+      公历转干支、生肖五行、二十四节气——精确计算，免费使用，无需注册。
+      本工具的算法引擎同样驱动我们的国学易学 App。
+    </p>
+    <p class="sub" data-lang="en">
+      Gregorian-to-Ganzhi, zodiac and five elements, 24 solar terms — precise,
+      free, no signup. The same engine powers our Guoxue Yixue app.
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="toolbox">
+      <div class="row-2">
+        <div>
+          <label>公历日期</label>
+          <input type="date" id="dateInput" value="2000-01-01">
+        </div>
+        <div>
+          <label>时辰（可选）</label>
+          <select id="hourSelect">
+            <option value="">不指定时辰</option>
+            <option value="0">子时 23:00-01:00</option>
+            <option value="2">丑时 01:00-03:00</option>
+            <option value="4">寅时 03:00-05:00</option>
+            <option value="6">卯时 05:00-07:00</option>
+            <option value="8">辰时 07:00-09:00</option>
+            <option value="10">巳时 09:00-11:00</option>
+            <option value="12">午时 11:00-13:00</option>
+            <option value="14">未时 13:00-15:00</option>
+            <option value="16">申时 15:00-17:00</option>
+            <option value="18">酉时 17:00-19:00</option>
+            <option value="20">戌时 19:00-21:00</option>
+            <option value="22">亥时 21:00-23:00</option>
+          </select>
+        </div>
+      </div>
+      <div class="result-grid" id="result">
+        <div class="r-item"><div class="r-lbl">干支纪年</div><div class="r-val" id="rYear">—</div><div class="r-sub" id="rYearSub"></div></div>
+        <div class="r-item"><div class="r-lbl">干支纪日</div><div class="r-val" id="rDay">—</div><div class="r-sub" id="rDaySub"></div></div>
+        <div class="r-item"><div class="r-lbl">生肖</div><div class="r-val" id="rZodiac">—</div><div class="r-sub" id="rZodiacSub"></div></div>
+        <div class="r-item"><div class="r-lbl">日主五行</div><div class="r-val" id="rElement">—</div><div class="r-sub" id="rElementSub"></div></div>
+        <div class="r-item"><div class="r-lbl">干支纪月</div><div class="r-val" id="rMonth">—</div><div class="r-sub" id="rMonthSub"></div></div>
+        <div class="r-item"><div class="r-lbl">干支纪时</div><div class="r-val" id="rHour">—</div><div class="r-sub" id="rHourSub"></div></div>
+      </div>
+      <p class="note" data-lang="zh">
+        说明：年柱以立春为界（立春前仍属上一年）；月柱以节气为界（近似按公历日期，
+        精确排盘请使用 App）。日柱采用标准儒略日换算，2000-01-01 为戊午日。
+      </p>
+      <p class="note" data-lang="en">
+        Note: year pillar resets at Lichun (Start of Spring); month pillar follows
+        solar terms (approximate by date). Day pillar uses the standard Julian-day
+        conversion (2000-01-01 is a Wu-Wu day).
+      </p>
+    </div>
+
+    <div class="solar-terms">
+      <h3 data-lang="zh">2026 年二十四节气表</h3>
+      <h3 data-lang="en">24 Solar Terms 2026</h3>
+      <div class="terms-grid" id="termsGrid"></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="products.html" data-lang="zh">产品</a><a href="products.html" data-lang="en">Products</a>
+        <a href="services.html" data-lang="zh">服务</a><a href="services.html" data-lang="en">Services</a>
+        <a href="work.html" data-lang="zh">案例</a><a href="work.html" data-lang="en">Work</a>
+        <a href="tools.html" data-lang="zh">工具</a><a href="tools.html" data-lang="en">Tools</a>
+        <a href="blog.html" data-lang="zh">知识库</a><a href="blog.html" data-lang="en">Blog</a>
+        <a href="about.html" data-lang="zh">关于</a><a href="about.html" data-lang="en">About</a>
+        <a href="contact.html" data-lang="zh">联系</a><a href="contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== 干支计算引擎 =====
+const STEMS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const ZODIAC = ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
+const ELEMENTS = ['木','木','火','火','土','土','金','金','水','水']; // 天干五行
+const ELEMENT_BRANCH = ['水','土','木','木','土','火','火','土','金','金','土','水']; // 地支五行
+const MONTH_BRANCH = [0,2,3,4,5,6,7,8,9,10,11,0,1]; // 正月(1月)=寅(2)...农历年地支月（近似按公历）
+
+// 天干地支六十年循环（甲子=0）
+function sexagenary(n) {
+  n = ((n % 60) + 60) % 60;
+  return { stem: STEMS[n % 10], branch: BRANCHES[n % 12], name: STEMS[n % 10] + BRANCHES[n % 12] };
+}
+
+// 儒略日（标准公历算法，返回中午值）
+function julianDay(y, m, d) {
+  const a = Math.floor((14 - m) / 12);
+  const yy = y + 4800 - a;
+  const mm = m + 12 * a - 3;
+  let jdn = d + Math.floor((153 * mm + 2) / 5) + 365 * yy
+    + Math.floor(yy / 4) - Math.floor(yy / 100) + Math.floor(yy / 400) - 32045;
+  return jdn;
+}
+function dayGanzhi(y, m, d) {
+  // 锚点：2000-01-01 儒略日 2451545，干支戊午（索引54）
+  // (2451545 + K) % 60 = 54  => K = 49
+  const jd = julianDay(y, m, d);
+  const idx = ((jd + 49) % 60 + 60) % 60;
+  return sexagenary(idx);
+}
+
+// 年柱（立春近似：2月4日后算新年）
+function yearGanzhi(y, m, d) {
+  let year = y;
+  if (m < 2 || (m === 2 && d < 4)) year = y - 1; // 立春前仍属上年
+  const idx = ((year - 4) % 60 + 60) % 60;
+  return sexagenary(idx);
+}
+
+// 月柱（近似：以公历日对应节气段，粗略按每月7日前后交节）
+function monthGanzhi(y, m, d) {
+  // 立春(2/4)为寅月起点；简化按公历月，2月=寅
+  const monthNum = (m + 11) % 12; // 2月->0(寅) 3月->1(卯) ... 1月->11(丑)
+  const branchIdx = (monthNum + 2) % 12;
+  // 年干确定月干首干：甲己年丙寅起
+  const yearG = yearGanzhi(y, m, d).stem;
+  const yearStemIdx = STEMS.indexOf(yearG);
+  const firstStem = (yearStemIdx % 5) * 2 + 2; // 甲年(0)->丙(2)，乙年(1)->戊(4)...
+  const stemIdx = (firstStem + monthNum) % 10;
+  return { stem: STEMS[stemIdx], branch: BRANCHES[branchIdx], name: STEMS[stemIdx] + BRANCHES[branchIdx] };
+}
+
+// 时柱（日干起子时）
+function hourGanzhi(dayStem, hour) {
+  if (hour === undefined || hour === null || hour === '') return { name: '—' };
+  const dayStemIdx = STEMS.indexOf(dayStem);
+  const branchIdx = Math.floor(((hour + 1) % 24) / 2); // 23-1=子(0)
+  const ziStem = (dayStemIdx % 5) * 2; // 甲己日子时甲
+  const stemIdx = (ziStem + branchIdx) % 10;
+  return { stem: STEMS[stemIdx], branch: BRANCHES[branchIdx], name: STEMS[stemIdx] + BRANCHES[branchIdx] };
+}
+
+// 2026 年节气表（日期为公历）
+const TERMS_2026 = [
+  ['小寒','01-05'],['大寒','01-20'],['立春','02-04'],['雨水','02-18'],
+  ['惊蛰','03-05'],['春分','03-20'],['清明','04-05'],['谷雨','04-20'],
+  ['立夏','05-05'],['小满','05-21'],['芒种','06-05'],['夏至','06-21'],
+  ['小暑','07-07'],['大暑','07-23'],['立秋','08-07'],['处暑','08-23'],
+  ['白露','09-07'],['秋分','09-22'],['寒露','10-08'],['霜降','10-23'],
+  ['立冬','11-07'],['小雪','11-22'],['大雪','12-07'],['冬至','12-21'],
+];
+
+function renderTerms() {
+  const grid = document.getElementById('termsGrid');
+  const today = new Date();
+  const todayStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+  grid.innerHTML = TERMS_2026.map(t => {
+    const dateStr = '2026-' + t[1];
+    const cls = dateStr === todayStr ? 'active' : '';
+    return '<div class="term-chip ' + cls + '"><div class="t-name">' + t[0] + '</div><div class="t-date">' + t[1] + '</div></div>';
+  }).join('');
+}
+
+function compute() {
+  const val = document.getElementById('dateInput').value;
+  if (!val) return;
+  const [y, m, d] = val.split('-').map(Number);
+  const h = document.getElementById('hourSelect').value;
+
+  const yg = yearGanzhi(y, m, d);
+  const dg = dayGanzhi(y, m, d);
+  const mg = monthGanzhi(y, m, d);
+  const hg = hourGanzhi(dg.stem, h);
+
+  const zodiacIdx = BRANCHES.indexOf(yg.branch);
+  document.getElementById('rYear').textContent = yg.name + '年';
+  document.getElementById('rYearSub').textContent = '属' + ZODIAC[zodiacIdx] + ' · ' + ELEMENTS[STEMS.indexOf(yg.stem)] + '命';
+  document.getElementById('rDay').textContent = dg.name + '日';
+  document.getElementById('rDaySub').textContent = '日主' + dg.stem + ' · 五行' + ELEMENTS[STEMS.indexOf(dg.stem)];
+  document.getElementById('rZodiac').textContent = ZODIAC[zodiacIdx];
+  document.getElementById('rZodiacSub').textContent = yg.name + '年生人';
+  document.getElementById('rElement').textContent = ELEMENTS[STEMS.indexOf(dg.stem)];
+  document.getElementById('rElementSub').textContent = '日干' + dg.stem + '属' + ELEMENTS[STEMS.indexOf(dg.stem)];
+  document.getElementById('rMonth').textContent = mg.name + '月';
+  document.getElementById('rMonthSub').textContent = '（节气近似）';
+  document.getElementById('rHour').textContent = h ? hg.name + '时' : '—';
+  document.getElementById('rHourSub').textContent = h ? '日干' + dg.stem + '起' + hg.stem + '时' : '选择时辰后显示';
+}
+
+document.getElementById('dateInput').addEventListener('change', compute);
+document.getElementById('hourSelect').addEventListener('change', compute);
+compute();
+renderTerms();
+
+// ===== 语言切换 =====
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>

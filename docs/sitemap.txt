@@ -2,6 +2,7 @@ https://toolgen.xyz/
 https://toolgen.xyz/products.html
 https://toolgen.xyz/services.html
 https://toolgen.xyz/work.html
+https://toolgen.xyz/tools.html
 https://toolgen.xyz/blog.html
 https://toolgen.xyz/blog/ai-agent-bug-hunting.html
 https://toolgen.xyz/blog/github-actions-content-pipeline.html
@@ -11,5 +12,10 @@ https://toolgen.xyz/blog/github-pages-custom-domain.html
 https://toolgen.xyz/blog/local-llm-deployment.html
 https://toolgen.xyz/blog/multi-agent-collaboration.html
 https://toolgen.xyz/blog/one-person-company.html
+https://toolgen.xyz/blog/ganzhi-intro.html
+https://toolgen.xyz/blog/bazi-basics.html
+https://toolgen.xyz/blog/wuxing-intro.html
+https://toolgen.xyz/blog/shengxiao-intro.html
+https://toolgen.xyz/blog/solar-terms-intro.html
 https://toolgen.xyz/about.html
 https://toolgen.xyz/contact.html
