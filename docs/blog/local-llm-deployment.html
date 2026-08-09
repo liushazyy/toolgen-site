@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>在 8GB 内存服务器上部署本地视觉模型：Ollama + MiniCPM-V 实践 | 玄境科技知识库</title>
+<meta name="description" content="8GB 内存/2 核的阿里云 ECS 上跑本地视觉模型 MiniCPM-V 4.6 的完整实践：Ollama 免安装版、模型导入、API 调用，以及数据不出服务器的隐私方案。">
+<meta property="og:title" content="在 8GB 内存服务器上部署本地视觉模型：Ollama + MiniCPM-V 实践">
+<meta property="og:description" content="Ollama 免安装版 + MiniCPM-V 4.6 + 本地 API">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-08</div>
+    <h1 data-lang="zh">在 8GB 内存服务器上部署本地视觉模型：Ollama + MiniCPM-V 实践</h1>
+    <h1 data-lang="en">Deploying a local vision model on an 8GB server: Ollama + MiniCPM-V</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #本地模型 #Ollama #MiniCPM-V #隐私
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      
+<h2>需求</h2>
+<p>
+需要一个本地视觉模型处理图片，要求数据不出服务器（隐私敏感场景）：
+8GB 内存、2 核 CPU、无 GPU 的阿里云 ECS。7B 以上模型跑不动，
+MiniCPM-V 4.6（约 4B 参数 + 视觉编码器）正好压线。
+</p>
+
+<h2>为什么 Ollama</h2>
+<ul>
+<li>一条命令起服务，管理模型（导入/删除/列表）简单</li>
+<li>兼容 OpenAI API 风格，客户端改 base_url 即可接入</li>
+<li>支持本地 GGUF 模型导入，不需要预先转换</li>
+</ul>
+
+<h2>部署步骤</h2>
+<pre style="background:var(--ink-2);border:1px solid var(--line-0);padding:22px;border-radius:4px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;"># 1. 下载 Ollama 免安装版（Windows zip，0.32.x）
+# 2. 启动服务（注意：安装器版在 Server 上会卡死，用 zip 版）
+ollama.exe serve
+
+# 3. 导入 MiniCPM-V 4.6 模型
+# 模型文件含 .gguf + mmproj（视觉投影）
+# Ollama 0.32.5 无 PROJECTOR 指令，FROM 目录自动识别 mmproj
+ollama create minicpm-v46 -f Modelfile
+
+# 4. 验证
+curl http://localhost:11434/api/tags</pre>
+
+<h2>Modelfile 关键点</h2>
+<pre style="background:var(--ink-2);border:1px solid var(--line-0);padding:22px;border-radius:4px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;">FROM ./minicpm-v-4_6-q4_k_m.gguf
+FROM ./mmproj-minicpm-v-4_6-f16.gguf</pre>
+<p>
+新版 Ollama 支持在 Modelfile 里写两个 FROM：第一个是主模型，
+第二个是 mmproj（视觉投影层）。目录里放两个文件即可自动识别。
+</p>
+
+<h2>API 调用（图片分析）</h2>
+<pre style="background:var(--ink-2);border:1px solid var(--line-0);padding:22px;border-radius:4px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;">POST /api/generate
+{
+  "model": "minicpm-v46",
+  "prompt": "描述这张图片",
+  "images": ["<base64>"],
+  "stream": false
+}</pre>
+
+<h2>性能实测</h2>
+<ul>
+<li>单图分析：约 30-90 秒（CPU 推理，看图片复杂度）</li>
+<li>内存占用：约 5-6GB（q4 量化 + 视觉编码器）</li>
+<li>识别质量：界面截图、表格、中文 OCR 可用；复杂场景理解有限</li>
+</ul>
+
+<h2>运维坑</h2>
+<ul>
+<li><strong>开机自启</strong>：注册计划任务，用绝对路径调 ollama.exe，以 SYSTEM 账户运行。</li>
+<li><strong>服务内存</strong>：8GB 机器上模型占大头，其他服务要控制内存，避免 OOM。</li>
+<li><strong>隐私价值</strong>：图片全程本地处理，不经过任何云端 API——对敏感业务是硬需求。</li>
+</ul>
+<div class="quote-block">
+        给 Agent 的任务书，要具体到「能写失败测试」才算合格；给维护者的 PR，
+        要具体到「红→绿证据链」才算专业。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>

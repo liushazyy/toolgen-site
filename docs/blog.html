@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>知识库 — 技术文章与实战复盘 | 玄境科技</title>
-<meta name="description" content="玄境科技知识库：AI Agent 实战、开源漏洞审计、自动化流水线、Solana 开发等一线技术文章，全部来自真实项目经验。">
+<meta name="description" content="玄境科技知识库：AI Agent 实战、开源漏洞审计、自动化流水线、Solana 开发、本地模型部署、一人公司运营等一线技术文章，全部来自真实项目经验。">
 <meta property="og:title" content="知识库 — 技术文章与实战复盘 | 玄境科技">
-<meta property="og:description" content="AI Agent 实战、开源漏洞审计、自动化流水线——一线技术文章">
+<meta property="og:description" content="AI Agent 实战、漏洞审计、自动化流水线、Solana 开发——一线技术文章">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://toolgen.xyz/blog.html">
 <meta property="og:image" content="https://toolgen.xyz/og-image.svg">
@@ -56,12 +56,12 @@
     <h1 data-lang="zh">从实战中沉淀的技术内容</h1>
     <h1 data-lang="en">Technical content from real projects</h1>
     <p class="sub" data-lang="zh">
-      没有理论空谈，只有一线项目的复盘：AI Agent 协作、开源漏洞审计、自动化流水线、Solana 开发。
-      每一篇都来自真实交付。
+      没有理论空谈，只有一线项目的复盘：AI Agent 协作、开源漏洞审计、自动化流水线、
+      Solana 开发、本地模型部署、一人公司运营。每一篇都来自真实交付。
     </p>
     <p class="sub" data-lang="en">
       No theory for theory's sake — every article is a post-mortem from real deliveries:
-      AI-agent collaboration, open-source audits, automation pipelines, Solana development.
+      AI-agent collaboration, audits, pipelines, Solana, local models, one-person company ops.
     </p>
   </div>
 </header>
@@ -69,6 +69,7 @@
 <section class="section">
   <div class="wrap">
     <div class="grid-2">
+
       <article class="card reveal">
         <div class="num">ARTICLE 01 · AI AGENT</div>
         <h3>AI Agent 批量修复开源项目漏洞：35 个 bug 的实战复盘</h3>
@@ -121,6 +122,59 @@
           <a href="blog/smart-contract-audit-methodology.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="en">Read</a>
         </div>
       </article>
+
+      <article class="card reveal">
+        <div class="num">ARTICLE 05 · DEVOPS</div>
+        <h3>GitHub Pages 自定义域名实战：绑定、证书与跨账号迁移</h3>
+        <p style="color:var(--paper-1);font-size:14.5px;line-height:1.9;">
+          从阿里云 DNS 配置到 CNAME 绑定、HTTPS 证书、跨账号域名占用迁移的完整实战记录，
+          含"域名被另一个账号占用"的两种解法。
+        </p>
+        <div style="margin-top:20px;">
+          <a href="blog/github-pages-custom-domain.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="zh">阅读全文</a>
+          <a href="blog/github-pages-custom-domain.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="en">Read</a>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="num">ARTICLE 06 · LOCAL AI</div>
+        <h3>在 8GB 内存服务器上部署本地视觉模型：Ollama + MiniCPM-V 实践</h3>
+        <p style="color:var(--paper-1);font-size:14.5px;line-height:1.9;">
+          8GB 内存/2 核的阿里云 ECS 上跑本地视觉模型 MiniCPM-V 4.6 的完整实践：
+          Ollama 免安装版、模型导入、API 调用，以及数据不出服务器的隐私方案。
+        </p>
+        <div style="margin-top:20px;">
+          <a href="blog/local-llm-deployment.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="zh">阅读全文</a>
+          <a href="blog/local-llm-deployment.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="en">Read</a>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="num">ARTICLE 07 · AGENT OPS</div>
+        <h3>多 Agent 并行协作方法论：拆任务、分片、验收</h3>
+        <p style="color:var(--paper-1);font-size:14.5px;line-height:1.9;">
+          一人公司如何用多个 AI Agent 并行干活：任务分片原则、子代理任务书怎么写、
+          结果如何验收，附真实项目的分工案例。
+        </p>
+        <div style="margin-top:20px;">
+          <a href="blog/multi-agent-collaboration.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="zh">阅读全文</a>
+          <a href="blog/multi-agent-collaboration.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="en">Read</a>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="num">ARTICLE 08 · STARTUP</div>
+        <h3>一人科技公司运营实录：工具链、成本与取舍</h3>
+        <p style="color:var(--paper-1);font-size:14.5px;line-height:1.9;">
+          一个人开科技公司的真实运营记录：AI Agent 团队怎么搭、成本多少、
+          哪些事该外包、哪些坑不能踩，以及为什么"一个人"反而有优势。
+        </p>
+        <div style="margin-top:20px;">
+          <a href="blog/one-person-company.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="zh">阅读全文</a>
+          <a href="blog/one-person-company.html" class="btn btn-ghost" style="padding:10px 26px;font-size:13px;" data-lang="en">Read</a>
+        </div>
+      </article>
+
     </div>
   </div>
 </section>

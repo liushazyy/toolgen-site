@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多 Agent 并行协作方法论：拆任务、分片、验收 | 玄境科技知识库</title>
+<meta name="description" content="一人公司如何用多个 AI Agent 并行干活：任务分片原则、子代理任务书怎么写、结果如何验收，附真实项目的分工案例。">
+<meta property="og:title" content="多 Agent 并行协作方法论：拆任务、分片、验收">
+<meta property="og:description" content="任务分片 + 子代理任务书 + 验收清单">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-08</div>
+    <h1 data-lang="zh">多 Agent 并行协作方法论：拆任务、分片、验收</h1>
+    <h1 data-lang="en">Multi-agent parallel collaboration: splitting, sharding, accepting</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #AI Agent #协作 #项目管理 #自动化
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      
+<h2>核心问题</h2>
+<p>
+一个人 + 多个 AI Agent，最大的优势是并行，最大的坑也是并行——
+任务切不好，Agent 之间互相踩脚，产出合并不了，返工比单干还慢。
+这篇记录我们从实战里总结的分工方法。
+</p>
+
+<h2>分片原则</h2>
+<ul>
+<li><strong>按模块域切</strong>：每个 Agent 负责一组相关文件/功能，互不重叠（比如：服务层 / CLI 层 / 集成层）。</li>
+<li><strong>按依赖切</strong>：有依赖关系的任务排串行，独立的排并行。先做接口定义，再并行实现。</li>
+<li><strong>粒度合适</strong>：一个 Agent 的任务要在 10-30 分钟内能完成。任务太大拆不动，太小并行开销大于收益。</li>
+</ul>
+
+<h2>子代理任务书模板</h2>
+<p>
+任务书是并行协作的关键。我们的模板固定五个部分，缺一不可：
+</p>
+<pre style="background:var(--ink-2);border:1px solid var(--line-0);padding:22px;border-radius:4px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;">目标：一句话说清要交付什么
+范围：负责哪些文件/模块（明确排除哪些）
+上下文：相关背景、约束、已有哪些约定
+输出要求：交付物的具体格式（文件+行号+代码/测试）
+验收标准：什么样算完成（能跑测试？能过评审？）</pre>
+
+<h2>验收：不信任，只验证</h2>
+<p>
+Agent 的自述报告不可信。我们坚持「可验证交付物」原则：
+</p>
+<ul>
+<li>代码任务：必须能跑通测试，要有真实执行输出</li>
+<li>审计任务：每个发现必须有文件+行号+复现思路</li>
+<li>写作任务：必须是完成稿，不是大纲</li>
+</ul>
+<p>
+主代理或人工负责交叉验证——把两个 Agent 的结果互相核对，
+比如让审查 Agent 复核开发 Agent 的代码，再让开发 Agent 修复审查发现的问题。
+这个「开发-审查」循环是质量的核心。
+</p>
+
+<h2>真实案例：35 bug 审计</h2>
+<p>
+把一个 FastAPI 项目切成三片（服务层/CLI/集成层），三个审计 Agent 并行扫描，
+主代理人工预扫核心文件。结果：三个 Agent 共报 17 个候选，
+人工筛出 7 个可写失败测试的确定性 bug，全部先红后绿验证。
+并行把原本需要数天的审计压缩到数小时。
+</p>
+
+<h2>踩过的坑</h2>
+<ul>
+<li><strong>任务书太模糊</strong>：「看看有没有问题」= 没有产出。要具体到「报告文件+行号+复现思路」。</li>
+<li><strong>重复劳动</strong>：两个 Agent 扫同一文件，报同一批 bug。分片要明确边界。</li>
+<li><strong>合并冲突</strong>：并行分支改同一文件，合并不了。约定「各 Agent 只碰自己范围的代码」。</li>
+</ul>
+
+<h2>结论</h2>
+<p>
+多 Agent 协作不是「放出去不管」，而是「拆得清楚、写得明确、验得严格」。
+流程到位，并行是加速器；流程缺失，并行是灾难。
+</p>
+<div class="quote-block">
+        给 Agent 的任务书，要具体到「能写失败测试」才算合格；给维护者的 PR，
+        要具体到「红→绿证据链」才算专业。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>

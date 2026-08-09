@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智能合约审计方法论：从代码到利用路径 | 玄境科技知识库</title>
+<meta name="description" content="Solana 隐私池审计完整思路：零知识证明路径、nullifier 一致性、费率边界、权限模型，如何输出严重度分级+行号+利用路径的专业报告。">
+<meta property="og:title" content="智能合约审计方法论：从代码到利用路径">
+<meta property="og:description" content="ZK 路径核查 + nullifier 一致性 + 严重度分级报告">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-08</div>
+    <h1 data-lang="zh">智能合约审计方法论：从代码到利用路径</h1>
+    <h1 data-lang="en">Smart contract audit methodology: from code to exploit path</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #安全审计 #智能合约 #Solana #零知识证明
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      
+<h2>审计目标</h2>
+<p>
+一次 Solana 隐私池（privacy pool）协议审计。协议核心：用户提交零知识证明，
+验证通过后由池子代为执行转账，实现「谁花的钱不可追踪」。审计要回答：
+这个系统有没有办法被绕过或滥用？
+</p>
+
+<h2>审计框架：五个核查面</h2>
+
+<h3>1. 零知识证明路径</h3>
+<p>
+ZK 电路是否真正验证了必要的约束？常见问题：电路只验证了一部分 witness，
+或者验证了无关变量。对 Circom/Arkworks 电路，逐条对照约束方程与业务规则，
+确认「验证通过 => 满足全部条件」成立。
+</p>
+
+<h3>2. nullifier 一致性</h3>
+<p>
+隐私池防双花的核心是 nullifier：同一笔承诺只能被花费一次。
+审计重点：nullifier 是否在链上正确记录？是否有路径可以构造出相同的 nullifier
+而不被发现？哈希输入顺序、域分隔符（domain separator）错位都会导致碰撞。
+</p>
+
+<h3>3. 费率与金额边界</h3>
+<p>
+金额计算是否可能溢出/下溢？费率取整是否导致「少扣费」或「多扣费」？
+Solana 的 u64 算术要逐处检查溢出场景，费率计算要验证极端输入
+（零金额、最大金额、频繁小额）。
+</p>
+
+<h3>4. 权限模型</h3>
+<p>
+谁可以调用管理函数？参数是否可被任意用户控制？Anchor 的 signer 检查、
+program upgrade authority、close account 权限都要过一遍。
+</p>
+
+<h3>5. 状态一致性</h3>
+<p>
+池子的累计状态（总锁定、总花费）与成员账户状态是否可能不一致？
+异常路径（证明失败、重复花费、部分执行）后状态是否回滚干净？
+</p>
+
+<h2>报告标准：让修复者不猜</h2>
+<p>
+审计报告的每个发现都包含四要素，缺一不可：
+</p>
+<ul>
+<li><strong>严重度</strong>：Critical / High / Medium / Low，附带判定理由。</li>
+<li><strong>位置</strong>：文件 + 行号 + 代码片段。</li>
+<li><strong>根因</strong>：为什么这里是 bug，攻击者如何利用。</li>
+<li><strong>利用路径</strong>：从攻击者视角的完整调用序列，验证可达性。</li>
+</ul>
+
+<h2>工具与验证</h2>
+<ul>
+<li>Anchor 测试框架：写 PoC 测试复现每个 High 以上问题，用真实执行证明可达。</li>
+<li>静态扫描：grep 常见危险模式（unwrap、unchecked、裸 transfer）。</li>
+<li>交叉复核：两个视角（开发者视角找遗漏，攻击者视角找路径）独立过一遍。</li>
+</ul>
+
+<h2>教训</h2>
+<p>
+审计的价值不在「找出多少行问题」，而在「让修复者拿到报告就能动手」。
+严重度判断要保守——宁可把可疑的标 High 并说明依据，也不要漏报。
+输出一份「带利用路径」的报告，比十页泛泛而谈的安全建议有用得多。
+</p>
+<div class="quote-block">
+        给 Agent 的任务书，要具体到「能写失败测试」才算合格；给维护者的 PR，
+        要具体到「红→绿证据链」才算专业。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Pages 自定义域名实战：绑定、证书与跨账号迁移 | 玄境科技知识库</title>
+<meta name="description" content="从 DNS 配置到 CNAME 绑定、HTTPS 证书、跨账号域名占用迁移的完整实战记录，含阿里云解析操作与常见坑。">
+<meta property="og:title" content="GitHub Pages 自定义域名实战：绑定、证书与跨账号迁移">
+<meta property="og:description" content="阿里云 DNS + CNAME 绑定 + 跨账号域名释放迁移">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-08</div>
+    <h1 data-lang="zh">GitHub Pages 自定义域名实战：绑定、证书与跨账号迁移</h1>
+    <h1 data-lang="en">GitHub Pages custom domain: binding, certificates, and cross-account migration</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #GitHub Pages #域名 #DNS #HTTPS
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      
+<h2>需求</h2>
+<p>
+把 GitHub Pages 站点绑到自己的域名 toolgen.xyz 上，要求 HTTPS 强制开启。
+过程中遇到两个典型问题：域名被另一个 GitHub 账号占用、CNAME 文件位置放错。
+这篇记录完整流程和踩坑点。
+</p>
+
+<h2>第一步：DNS 配置（阿里云）</h2>
+<p>
+Pages 站点的域名解析要求：根域用 A 记录指向 GitHub Pages 的四个 IP，
+www 子域用 CNAME 指向 <code>&lt;username&gt;.github.io</code>。
+</p>
+<pre style="background:var(--ink-2);border:1px solid var(--line-0);padding:22px;border-radius:4px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;"># 根域（4 条 A 记录）
+185.199.108.153
+185.199.109.153
+185.199.110.153
+185.199.111.153
+
+# www（1 条 CNAME）
+www -> yourname.github.io</pre>
+<p>
+注意：根域不要用 CNAME 指向 github.io——根域 CNAME 与 DNSSEC/其他记录冲突，
+解析不稳定。正确姿势是 A 记录。
+</p>
+
+<h2>第二步：CNAME 文件放对位置</h2>
+<p>
+关键坑：Pages 从发布目录（<code>/docs</code> 或 <code>/</code>）读取 CNAME 文件。
+如果发布目录是 <code>/docs</code>，CNAME 必须放在 <code>docs/CNAME</code>，
+放仓库根目录不生效。症状：Pages 状态 built 但 cname 一直为 None。
+</p>
+
+<h2>第三步：HTTPS 证书</h2>
+<p>
+CNAME 正确绑定后，GitHub 自动为域名签发 Let's Encrypt 证书并强制 HTTPS。
+绑定后 API 里 <code>https_certificate.state</code> 会从 pending 变为 approved，
+通常几分钟到几十分钟。证书每季度自动续期，无需人工干预。
+</p>
+
+<h2>第四步：跨账号域名占用迁移</h2>
+<p>
+最大的坑：域名之前绑定在另一个 GitHub 账号（比如旧账号）的 Pages 站点上，
+新账号绑定会报错 <code>The custom domain is already taken</code>。
+</p>
+<p>两种解法：</p>
+<ul>
+<li><strong>找回旧账号</strong>：重置密码登录旧账号，在仓库 Pages 设置里删除自定义域名（PUT API 传空 cname），释放占用。</li>
+<li><strong>域名所有权验证</strong>：如果旧账号无法访问，在 DNS 添加 TXT 记录
+<code>_github-pages-challenge-&lt;username&gt;.&lt;domain&gt;</code> 验证域名归属，
+GitHub 验证后释放。</li>
+</ul>
+<p>
+实测路径：通过重置旧账号密码 + 设备验证码登录，生成 PAT 后调用
+<code>PUT /repos/{owner}/{repo}/pages</code> 传空 cname，HTTP 204 释放成功，
+随后新账号 PUT cname 绑定成功，证书自动签发。
+</p>
+
+<h2>验证清单</h2>
+<ul>
+<li><code>nslookup yourdomain.com</code> 确认解析到 GitHub Pages 的 185.199.x.x</li>
+<li>API <code>GET /repos/{owner}/{repo}/pages</code> 的 cname 字段</li>
+<li><code>https://yourdomain.com</code> 浏览器访问 + 锁图标（证书有效）</li>
+</ul>
+<div class="quote-block">
+        给 Agent 的任务书，要具体到「能写失败测试」才算合格；给维护者的 PR，
+        要具体到「红→绿证据链」才算专业。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>

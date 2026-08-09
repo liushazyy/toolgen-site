@@ -5,5 +5,11 @@ https://toolgen.xyz/work.html
 https://toolgen.xyz/blog.html
 https://toolgen.xyz/blog/ai-agent-bug-hunting.html
 https://toolgen.xyz/blog/github-actions-content-pipeline.html
+https://toolgen.xyz/blog/solana-data-automation.html
+https://toolgen.xyz/blog/smart-contract-audit-methodology.html
+https://toolgen.xyz/blog/github-pages-custom-domain.html
+https://toolgen.xyz/blog/local-llm-deployment.html
+https://toolgen.xyz/blog/multi-agent-collaboration.html
+https://toolgen.xyz/blog/one-person-company.html
 https://toolgen.xyz/about.html
 https://toolgen.xyz/contact.html

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solana 生态数据自动化采集：RPC 与第三方数据源聚合实践 | 玄境科技知识库</title>
+<meta name="description" content="如何在受限网络环境下用 GitHub Actions 海外 runner 每日采集 Solana RPC 数据，聚合 DeFiLlama 与 Gate.io 数据源，输出 Markdown/JSON/HTML 三格式报告。">
+<meta property="og:title" content="Solana 生态数据自动化采集：RPC 与第三方数据源聚合实践">
+<meta property="og:description" content="GitHub Actions 海外 runner + RPC 采集 + 多格式报告输出">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-08</div>
+    <h1 data-lang="zh">Solana 生态数据自动化采集：RPC 与第三方数据源聚合实践</h1>
+    <h1 data-lang="en">Solana data automation: RPC and third-party aggregation in practice</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #Solana #RPC #GitHub Actions #数据采集
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      
+<h2>背景</h2>
+<p>
+需要构建一个 Solana 生态的自动化数据报告系统：每日采集链上数据、聚合第三方指标、
+输出可读报告。本机在大陆网络环境，直连 Solana RPC 与多数数据源要么超时要么被墙。
+解决方案是把定时任务放到 GitHub Actions 的海外 runner 上执行。
+</p>
+
+<h2>架构：三个数据层</h2>
+<ul>
+<li><strong>链上层</strong>：Solana RPC 节点（getSlot / getBalance / getEpochInfo 等），采集区块高度、验证者状态、链上活动。</li>
+<li><strong>生态层</strong>：DeFiLlama 协议 TVL、稳定币数据。</li>
+<li><strong>市场层</strong>：Gate.io 等交易所行情（价格、成交额）。</li>
+</ul>
+
+<h2>GitHub Actions 海外 runner 的优势</h2>
+<p>
+ubuntu-latest runner 部署在 GitHub 的海外基础设施，天然绕开大陆网络限制：
+<code>solana rpc</code>、<code>api.llama.fi</code>、<code>api.gateio.ws</code> 都能直连。
+这是大陆开发者在受限网络环境下最省事的「免费海外服务器」。
+</p>
+
+<h2>workflow 要点</h2>
+<pre style="background:var(--ink-2);border:1px solid var(--line-0);padding:22px;border-radius:4px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;">name: Daily RPC collect
+
+on:
+  schedule:
+    - cron: "0 2 * * *"   # 每天 02:00 UTC
+  workflow_dispatch:
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - name: Collect data
+        run: python scripts/collect.py
+      - name: Commit and push
+        run: |
+          git config user.name "bot"
+          git config user.email "bot@toolgen.xyz"
+          git add .
+          git diff --cached --quiet || git commit -m "data: daily update"
+          git push</pre>
+
+<h2>输出格式：一鱼三吃</h2>
+<p>
+同一份采集结果输出三种格式，覆盖不同消费场景：
+</p>
+<ul>
+<li><strong>Markdown</strong>：GitHub 直接渲染，人类阅读。</li>
+<li><strong>JSON</strong>：机器可读，供下游程序消费。</li>
+<li><strong>HTML</strong>：部署到 GitHub Pages，展示为在线仪表盘。</li>
+</ul>
+
+<h2>踩过的坑</h2>
+<ul>
+<li><strong>RPC 限流</strong>：公共 RPC 端点有速率限制，采集脚本要加退避重试，控制请求频率。</li>
+<li><strong>数据源不稳定</strong>：第三方 API 偶尔 5xx，脚本要容错：单源失败不影响整体输出，报告中标注数据源状态。</li>
+<li><strong>定时任务静默失败</strong>：workflow 失败不发通知。建议加 <code>actions/github-script</code> 在失败时创建 issue 告警。</li>
+<li><strong>commit 循环</strong>：自动提交必须幂等（有变更才提交），否则每天触发新 workflow 形成循环。</li>
+</ul>
+
+<h2>效果</h2>
+<p>
+系统稳定运行后：每日报告自动生成并部署，Markdown 报告在仓库可读，
+HTML 仪表盘在线可访问，全程零人工干预。这套「海外 runner + 定时任务 + 自动部署」
+的组合可以复用到任何需要定时抓取数据的场景。
+</p>
+<div class="quote-block">
+        给 Agent 的任务书，要具体到「能写失败测试」才算合格；给维护者的 PR，
+        要具体到「红→绿证据链」才算专业。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>

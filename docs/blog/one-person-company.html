@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>一人科技公司运营实录：工具链、成本与取舍 | 玄境科技知识库</title>
+<meta name="description" content="一个人开科技公司的真实运营记录：AI Agent 团队怎么搭、成本多少、哪些事该外包、哪些坑不能踩，以及为什么「一个人」反而有优势。">
+<meta property="og:title" content="一人科技公司运营实录：工具链、成本与取舍">
+<meta property="og:description" content="AI Agent 团队架构 + 成本结构 + 真实取舍">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-08</div>
+    <h1 data-lang="zh">一人科技公司运营实录：工具链、成本与取舍</h1>
+    <h1 data-lang="en">One-person tech company: toolchain, costs, and trade-offs</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #一人公司 #创业 #AI Agent #成本
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      
+<h2>为什么做一人公司</h2>
+<p>
+传统软件公司 70% 的成本花在沟通与协调：会议、评审、需求转述、跨部门扯皮。
+一人公司 + AI Agent 的结构把这些成本压缩到接近零——Agent 之间用结构化协议协作，
+决策链路短，执行速度快。这不是「便宜版公司」，而是「另一种结构」。
+</p>
+
+<h2>团队架构：一个人 + 一群 Agent</h2>
+<ul>
+<li><strong>决策层（人）</strong>：定方向、做决策、验收结果。所有关键节点唯一的人类节点。</li>
+<li><strong>执行层（Agent）</strong>：需求分析师、架构师、开发者、测试工程师、审查员——各司其职，并行协作。</li>
+<li><strong>流水线（自动化）</strong>：CI/CD、自动测试、监控告警，质量关卡嵌入每个环节。</li>
+</ul>
+
+<h2>成本结构（真实数字）</h2>
+<ul>
+<li><strong>域名</strong>：toolgen.xyz 约 ¥50/年</li>
+<li><strong>托管</strong>：GitHub Pages 免费（静态站）+ GitHub Actions 免费额度（公开仓库）</li>
+<li><strong>模型 API</strong>：按量付费，一人公司用量可控</li>
+<li><strong>本地服务器</strong>：阿里云 ECS 轻量实例（约 ¥100/月）</li>
+</ul>
+<p>
+月固定成本可以压到 ¥200 以内。对比传统公司的人员工资+场地，成本结构完全不同。
+</p>
+
+<h2>哪些事自己做，哪些事外包</h2>
+<p>
+原则：AI Agent 能稳定复现的自己做，需要真人身份/资质的外包。
+</p>
+<ul>
+<li><strong>自己做</strong>：开发、测试、审计、内容、运维、SEO——都是 Agent 能稳定交付的。</li>
+<li><strong>外包/需要真人</strong>：注册资质、银行卡开户、需要人脸识别的实名认证、线下活动。</li>
+</ul>
+
+<h2>真实取舍</h2>
+<ul>
+<li><strong>速度 vs 质量</strong>：Agent 快但可能「自信地错」。所有交付必须过验证（测试/评审）才能对外。</li>
+<li><strong>广度 vs 深度</strong>：一人公司接不了需要 10 人驻场的大单，专注小而深的垂直方向。</li>
+<li><strong>自动化 vs 人工</strong>：能自动化的全自动化，把人的注意力留给决策。</li>
+</ul>
+
+<h2>给想试的人</h2>
+<ul>
+<li>先把一个端到端流程跑通（接单→交付→收款），再谈扩张。</li>
+<li>每个 Agent 产出都要有验证环节——「不信任，只验证」。</li>
+<li>公开网站不放私人手机号，用邮箱做统一入口，隐私和安全都要想在前。</li>
+</ul>
+<div class="quote-block">
+        给 Agent 的任务书，要具体到「能写失败测试」才算合格；给维护者的 PR，
+        要具体到「红→绿证据链」才算专业。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>
