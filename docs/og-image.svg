@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="700" viewBox="0 0 1400 700">
+  <defs>
+    <radialGradient id="bg" cx="80%" cy="0%" r="100%">
+      <stop offset="0%" stop-color="#1a1f2e"/>
+      <stop offset="100%" stop-color="#0a0c10"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4af6a"/>
+      <stop offset="100%" stop-color="#e8cf9a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1400" height="700" fill="url(#bg)"/>
+  <line x1="80" y1="150" x2="1320" y2="150" stroke="#d4af6a" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="80" y="220" font-family="monospace" font-size="28" fill="#d4af6a" letter-spacing="8">玄境科技 · XUANJING TECH</text>
+  <text x="80" y="420" font-family="'Noto Serif SC','Songti SC',serif" font-size="96" fill="#f5f2ea">AI Agent 驱动的一人科技公司</text>
+  <text x="80" y="500" font-family="sans-serif" font-size="40" fill="#8b8678">软件定制 · AI Agent · 安全审计 · 国学易学 App</text>
+  <text x="80" y="600" font-family="monospace" font-size="30" fill="#e8cf9a">toolgen.xyz</text>
+  <rect x="1200" y="180" width="120" height="120" rx="8" fill="none" stroke="#d4af6a" stroke-width="3" transform="rotate(45 1260 240)"/>
+  <text x="1260" y="270" font-family="'Noto Serif SC',serif" font-size="60" fill="#e8cf9a" text-anchor="middle">玄</text>
+</svg>
