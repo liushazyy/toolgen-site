@@ -1,0 +1,38 @@
+name: Weekly content freshness
+
+on:
+  schedule:
+    - cron: "0 3 * * 1"   # 每周一 03:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-timestamp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Update last-updated marker
+        run: |
+          echo "Updated: $(date -u +'%Y-%m-%d %H:%M UTC')" > docs/.last-updated
+          git config user.name "xuanjing-bot"
+          git config user.email "bot@toolgen.xyz"
+          git add docs/.last-updated
+          if git diff --cached --quiet; then
+            echo "no changes"
+          else
+            git commit -m "chore: weekly freshness update [skip ci]"
+            git push
+            echo "pushed"
+          fi
+
+      - name: Ping Bing IndexNow
+        run: |
+          curl -s -m 30 -X POST "https://www.bing.com/indexnow" \
+            -H "Content-Type: application/json" \
+            -d '{"host":"toolgen.xyz","key":"xuanjing2026toolgen","keyLocation":"https://toolgen.xyz/ix-key.txt","urlList":["https://toolgen.xyz/","https://toolgen.xyz/products.html","https://toolgen.xyz/services.html","https://toolgen.xyz/work.html","https://toolgen.xyz/about.html","https://toolgen.xyz/contact.html"]}'
+          echo ""
