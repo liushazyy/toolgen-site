@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>智能合约审计方法论：从代码到利用路径</title>
-<meta name="description" content="Solana 隐私池审计完整思路：零知识证明路径、nullifier 一致性、费率边界、权限模型，如何输出严重度分级+行号+利用路径的专业报告。">
-<meta property="og:title" content="智能合约审计方法论：从代码到利用路径">
-<meta property="og:description" content="ZK 路径核查 + nullifier 一致性 + 严重度分级报告">
+<title>GPT 提示词工程入门：结构化任务书模板</title>
+<meta name="description" content="AI Agent 协作的核心是任务书质量。提供可复用的五要素任务书模板：目标、范围、上下文、输出要求、验收标准，附真实案例。">
+<meta property="og:title" content="GPT 提示词工程入门：结构化任务书模板">
+<meta property="og:description" content="五要素任务书模板 + 真实案例，提升 Agent 协作质量">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://toolgen.xyz/blog/smart-contract-audit-methodology.html">
+<meta property="og:url" content="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
 <meta property="og:image" content="https://toolgen.xyz/og-image.svg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://toolgen.xyz/blog/smart-contract-audit-methodology.html">
+<link rel="canonical" href="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="apple-touch-icon" href="../favicon.svg">
 <link rel="stylesheet" href="../style.css">
@@ -54,10 +54,10 @@
 <header class="page-head">
   <div class="wrap">
     <div class="kicker">KNOWLEDGE · 2026-08</div>
-    <h1 data-lang="zh">智能合约审计方法论：从代码到利用路径</h1>
-    <h1 data-lang="en">Smart contract audit methodology: from code to exploit path</h1>
+    <h1 data-lang="zh">GPT 提示词工程入门：结构化任务书模板</h1>
+    <h1 data-lang="en">Prompt engineering basics: structured task brief templates</h1>
     <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
-      #安全审计 #智能合约 #Solana #零知识证明
+      #提示词工程 #AI Agent #任务书 #协作
     </p>
   </div>
 </header>
@@ -66,72 +66,92 @@
   <div class="wrap">
     <div class="prose" style="max-width:820px;">
 
-      
-<h2>审计目标</h2>
+      <h2>为什么任务书决定一切</h2>
 <p>
-一次 Solana 隐私池（privacy pool）协议审计。协议核心：用户提交零知识证明，
-验证通过后由池子代为执行转账，实现「谁花的钱不可追踪」。审计要回答：
-这个系统有没有办法被绕过或滥用？
+AI Agent 的输出质量，90% 取决于你给它的任务书质量。同样的模型，
+一份模糊的任务书产出模糊的结果，一份结构化的任务书产出可交付的结果。
+这不是玄学，是信息论：Agent 只能基于你提供的信息做决策，
+信息越完整，决策越准确。
 </p>
 
-<h2>审计框架：五个核查面</h2>
-
-<h3>1. 零知识证明路径</h3>
+<h2>五要素任务书模板</h2>
 <p>
-ZK 电路是否真正验证了必要的约束？常见问题：电路只验证了一部分 witness，
-或者验证了无关变量。对 Circom/Arkworks 电路，逐条对照约束方程与业务规则，
-确认「验证通过 => 满足全部条件」成立。
+我们在一人公司 + 多 Agent 协作的实践中，把所有任务书收敛成五个固定部分，
+缺一不可。这个模板经过 35+ 个真实任务的验证，可直接复制使用：
 </p>
 
-<h3>2. nullifier 一致性</h3>
+<pre style="background:var(--ink-2);border:1px solid var(--line-0);padding:22px;border-radius:4px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;"># 任务书
+
+## 目标
+一句话说清要交付什么（可验收的结果，不是过程）
+
+## 范围
+- 负责哪些文件/模块
+- 明确排除哪些（防止 Agent 越界乱改）
+
+## 上下文
+- 相关背景、约束、已有约定
+- 参考文件路径
+- 必须遵守的规则
+
+## 输出要求
+- 交付物的具体格式（文件+行号+代码/测试/文章字数）
+- 语言要求
+
+## 验收标准
+- 什么样算完成（能跑测试？能过评审？字数达标？）
+- 不允许什么（不要伪代码、不要"待补充"）</pre>
+
+<h2>三个关键细节</h2>
+<h3>1. 排除项比目标更重要</h3>
 <p>
-隐私池防双花的核心是 nullifier：同一笔承诺只能被花费一次。
-审计重点：nullifier 是否在链上正确记录？是否有路径可以构造出相同的 nullifier
-而不被发现？哈希输入顺序、域分隔符（domain separator）错位都会导致碰撞。
+"范围"里的排除项是防止 Agent 越界的关键。多 Agent 并行时，
+如果每个 Agent 都认为"整个项目都是我的范围"，结果就是灾难。
+明确说"不要碰 XXX 文件"，比说"做好你的部分"有效十倍。
 </p>
 
-<h3>3. 费率与金额边界</h3>
+<h3>2. 验收标准要可验证</h3>
 <p>
-金额计算是否可能溢出/下溢？费率取整是否导致「少扣费」或「多扣费」？
-Solana 的 u64 算术要逐处检查溢出场景，费率计算要验证极端输入
-（零金额、最大金额、频繁小额）。
+"写一篇好文章"不可验收；"输出 800 字以上、含 3 个 h2 标题、
+有 meta description、无占位符"可验收。把验收标准写成检查清单，
+Agent 交付时逐项核对，主代理复核时也逐项核对。
 </p>
 
-<h3>4. 权限模型</h3>
+<h3>3. 上下文给足，但别灌水</h3>
 <p>
-谁可以调用管理函数？参数是否可被任意用户控制？Anchor 的 signer 检查、
-program upgrade authority、close account 权限都要过一遍。
+上下文不是越多越好。给相关的背景和约束，但不要塞无关信息——
+那会稀释 Agent 的注意力。判断标准：这段信息影响 Agent 的决策吗？
+不影响就不给。
 </p>
 
-<h3>5. 状态一致性</h3>
+<h2>真实案例</h2>
 <p>
-池子的累计状态（总锁定、总花费）与成员账户状态是否可能不一致？
-异常路径（证明失败、重复花费、部分执行）后状态是否回滚干净？
-</p>
-
-<h2>报告标准：让修复者不猜</h2>
-<p>
-审计报告的每个发现都包含四要素，缺一不可：
+以我们的网站知识库任务为例，任务书长这样：
 </p>
 <ul>
-<li><strong>严重度</strong>：Critical / High / Medium / Low，附带判定理由。</li>
-<li><strong>位置</strong>：文件 + 行号 + 代码片段。</li>
-<li><strong>根因</strong>：为什么这里是 bug，攻击者如何利用。</li>
-<li><strong>利用路径</strong>：从攻击者视角的完整调用序列，验证可达性。</li>
+<li><strong>目标</strong>：生成一篇关于提示词工程的原创文章</li>
+<li><strong>范围</strong>：只写 blog/ 目录下新文件，不改其他页面</li>
+<li><strong>上下文</strong>：参考现有文章模板（ai-agent-bug-hunting.html），保持深色金色视觉风格</li>
+<li><strong>输出要求</strong>：800+ 字、含 meta description、canonical、og:image，中英双语标题</li>
+<li><strong>验收标准</strong>：浏览器打开无样式错误、所有链接有效、无占位符</li>
 </ul>
-
-<h2>工具与验证</h2>
-<ul>
-<li>Anchor 测试框架：写 PoC 测试复现每个 High 以上问题，用真实执行证明可达。</li>
-<li>静态扫描：grep 常见危险模式（unwrap、unchecked、裸 transfer）。</li>
-<li>交叉复核：两个视角（开发者视角找遗漏，攻击者视角找路径）独立过一遍。</li>
-</ul>
-
-<h2>教训</h2>
 <p>
-审计的价值不在「找出多少行问题」，而在「让修复者拿到报告就能动手」。
-严重度判断要保守——宁可把可疑的标 High 并说明依据，也不要漏报。
-输出一份「带利用路径」的报告，比十页泛泛而谈的安全建议有用得多。
+这个任务书让 Agent 一次产出可用内容，不需要返工。
+</p>
+
+<h2>常见错误</h2>
+<ul>
+<li><strong>只有目标没有范围</strong>：Agent 把无关文件也改了</li>
+<li><strong>验收标准模糊</strong>："尽量做好" = 无法验收</li>
+<li><strong>上下文缺失</strong>：Agent 不知道已有约定，产出风格不一致</li>
+<li><strong>一次给太多任务</strong>：5 个任务塞一个任务书，Agent 只能做好前 2 个</li>
+</ul>
+
+<h2>总结</h2>
+<p>
+任务书是 Agent 协作的契约。五要素模板（目标、范围、上下文、输出要求、验收标准）
+把"模糊的期望"变成"可验证的交付物"。这套方法不仅适用于 AI Agent，
+也适用于任何远程协作场景——把话说清楚，是效率的起点。
 </p>
 <div class="quote-block">
         给 Agent 的任务书，要具体到「能写失败测试」才算合格；给维护者的 PR，
