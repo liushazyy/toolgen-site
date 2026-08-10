@@ -17,5 +17,6 @@ https://toolgen.xyz/blog/bazi-basics.html
 https://toolgen.xyz/blog/wuxing-intro.html
 https://toolgen.xyz/blog/shengxiao-intro.html
 https://toolgen.xyz/blog/solar-terms-intro.html
+https://toolgen.xyz/blog/qimen-intro.html
 https://toolgen.xyz/about.html
 https://toolgen.xyz/contact.html
