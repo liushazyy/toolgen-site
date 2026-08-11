@@ -19,5 +19,6 @@ https://toolgen.xyz/blog/shengxiao-intro.html
 https://toolgen.xyz/blog/solar-terms-intro.html
 https://toolgen.xyz/blog/qimen-intro.html
 https://toolgen.xyz/blog/prompt-engineering-task-brief.html
+https://toolgen.xyz/blog/liuyao-intro.html
 https://toolgen.xyz/about.html
 https://toolgen.xyz/contact.html

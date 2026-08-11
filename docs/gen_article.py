@@ -7,7 +7,7 @@ import io, sys, os, re
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 BASE = os.path.dirname(os.path.abspath(__file__))
-TPL = os.path.join(BASE, "ai-agent-bug-hunting.html")  # 干净的模板源
+TPL = os.path.join(BASE, "blog", "ai-agent-bug-hunting.html")  # 干净的模板源
 
 def main():
     if len(sys.argv) < 8:

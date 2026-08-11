@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GPT 提示词工程入门：结构化任务书模板</title>
-<meta name="description" content="AI Agent 协作的核心是任务书质量。提供可复用的五要素任务书模板：目标、范围、上下文、输出要求、验收标准，附真实案例。">
-<meta property="og:title" content="GPT 提示词工程入门：结构化任务书模板">
-<meta property="og:description" content="五要素任务书模板 + 真实案例，提升 Agent 协作质量">
+<title>六爻入门：从摇卦装卦到断卦的完整指南</title>
+<meta name="description" content="六爻占筮入门教程：三枚铜钱起卦、纳甲装卦、六亲世应、断卦框架与常见误区，一事一占的实用断事方法。">
+<meta property="og:title" content="六爻入门：从摇卦装卦到断卦的完整指南">
+<meta property="og:description" content="六爻入门指南：起卦装卦、六亲生克、世应动变与应期判断的完整体系">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://toolgen.xyz/blog/prompt-engineering-task-brief.html">
+<meta property="og:url" content="https://toolgen.xyz/blog/liuyao-intro.html">
 <meta property="og:image" content="https://toolgen.xyz/og-image.svg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://toolgen.xyz/blog/prompt-engineering-task-brief.html">
+<link rel="canonical" href="https://toolgen.xyz/blog/liuyao-intro.html">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="apple-touch-icon" href="../favicon.svg">
 <link rel="stylesheet" href="../style.css">
@@ -54,10 +54,10 @@
 <header class="page-head">
   <div class="wrap">
     <div class="kicker">KNOWLEDGE · 2026-08</div>
-    <h1 data-lang="zh">GPT 提示词工程入门：结构化任务书模板</h1>
-    <h1 data-lang="en">Prompt engineering basics: structured task brief templates</h1>
+    <h1 data-lang="zh">六爻入门：从摇卦装卦到断卦的完整指南</h1>
+    <h1 data-lang="en">Liuyao Divination: A Complete Guide from Coin Tossing to Interpretation</h1>
     <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
-      #提示词工程 #AI Agent #任务书 #协作
+      #六爻 #易学 #占筮 #八卦 #国学
     </p>
   </div>
 </header>
@@ -66,93 +66,40 @@
   <div class="wrap">
     <div class="prose" style="max-width:820px;">
 
-      <h2>为什么任务书决定一切</h2>
-<p>
-AI Agent 的输出质量，90% 取决于你给它的任务书质量。同样的模型，
-一份模糊的任务书产出模糊的结果，一份结构化的任务书产出可交付的结果。
-这不是玄学，是信息论：Agent 只能基于你提供的信息做决策，
-信息越完整，决策越准确。
-</p>
-
-<h2>五要素任务书模板</h2>
-<p>
-我们在一人公司 + 多 Agent 协作的实践中，把所有任务书收敛成五个固定部分，
-缺一不可。这个模板经过 35+ 个真实任务的验证，可直接复制使用：
-</p>
-
-<pre style="background:var(--ink-2);border:1px solid var(--line-0);padding:22px;border-radius:4px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;"># 任务书
-
-## 目标
-一句话说清要交付什么（可验收的结果，不是过程）
-
-## 范围
-- 负责哪些文件/模块
-- 明确排除哪些（防止 Agent 越界乱改）
-
-## 上下文
-- 相关背景、约束、已有约定
-- 参考文件路径
-- 必须遵守的规则
-
-## 输出要求
-- 交付物的具体格式（文件+行号+代码/测试/文章字数）
-- 语言要求
-
-## 验收标准
-- 什么样算完成（能跑测试？能过评审？字数达标？）
-- 不允许什么（不要伪代码、不要"待补充"）</pre>
-
-<h2>三个关键细节</h2>
-<h3>1. 排除项比目标更重要</h3>
-<p>
-"范围"里的排除项是防止 Agent 越界的关键。多 Agent 并行时，
-如果每个 Agent 都认为"整个项目都是我的范围"，结果就是灾难。
-明确说"不要碰 XXX 文件"，比说"做好你的部分"有效十倍。
-</p>
-
-<h3>2. 验收标准要可验证</h3>
-<p>
-"写一篇好文章"不可验收；"输出 800 字以上、含 3 个 h2 标题、
-有 meta description、无占位符"可验收。把验收标准写成检查清单，
-Agent 交付时逐项核对，主代理复核时也逐项核对。
-</p>
-
-<h3>3. 上下文给足，但别灌水</h3>
-<p>
-上下文不是越多越好。给相关的背景和约束，但不要塞无关信息——
-那会稀释 Agent 的注意力。判断标准：这段信息影响 Agent 的决策吗？
-不影响就不给。
-</p>
-
-<h2>真实案例</h2>
-<p>
-以我们的网站知识库任务为例，任务书长这样：
-</p>
+      <h2>什么是六爻</h2>
+<p>六爻是传统占筮术中最普及的一支，以三枚铜钱摇卦起卦，通过六次摇掷得到六个爻位，自下而上组成一卦。相比八字看一生格局、奇门看时空方位，六爻的特点是"一事一占"：针对具体问题给出明确的吉凶判断与应期参考，因此历来被称为"断事之王"。</p>
+<p>六爻的根基是《周易》六十四卦，但它的判断体系独立于卦辞本身，主要依靠装卦之后形成的六亲、世应、动变、生克冲合等符号语言。学习六爻，入门阶段只需掌握起卦与装卦，进阶阶段则需要熟悉月建日辰、旬空月破、六神、进退神、伏神等综合断法。</p>
+<h2>起卦：三枚铜钱六次摇</h2>
+<p>传统起卦用三枚铜钱（乾隆通宝最常见），双手合扣摇动后掷出，记录正反面情况，共摇六次，从下往上记爻：</p>
 <ul>
-<li><strong>目标</strong>：生成一篇关于提示词工程的原创文章</li>
-<li><strong>范围</strong>：只写 blog/ 目录下新文件，不改其他页面</li>
-<li><strong>上下文</strong>：参考现有文章模板（ai-agent-bug-hunting.html），保持深色金色视觉风格</li>
-<li><strong>输出要求</strong>：800+ 字、含 meta description、canonical、og:image，中英双语标题</li>
-<li><strong>验收标准</strong>：浏览器打开无样式错误、所有链接有效、无占位符</li>
+<li>一个背面（少阳）：记阳爻，符号为"━━━"，标记为单；</li>
+<li>两个背面（少阴）：记阴爻，符号为"━ ━"，标记为拆；</li>
+<li>三个背面（老阳）：记阳爻但为动爻，标记为"○"；</li>
+<li>三个正面（老阴）：记阴爻但为动爻，标记为"×"。</li>
 </ul>
-<p>
-这个任务书让 Agent 一次产出可用内容，不需要返工。
-</p>
-
-<h2>常见错误</h2>
+<p>老阳、老阴为动爻，动则变：老阳变阴，老阴变阳。本卦加上变卦，再加上互卦，就是完整的卦象信息。现代人也可以用硬币、随机数或软件起卦，原理相同——"以随机应机"，关键是心念专注、问题单一明确。</p>
+<h2>装卦：六亲与世应</h2>
+<p>起卦后需要装卦，即给每个爻配上地支、六亲、世应和六神：</p>
 <ul>
-<li><strong>只有目标没有范围</strong>：Agent 把无关文件也改了</li>
-<li><strong>验收标准模糊</strong>："尽量做好" = 无法验收</li>
-<li><strong>上下文缺失</strong>：Agent 不知道已有约定，产出风格不一致</li>
-<li><strong>一次给太多任务</strong>：5 个任务塞一个任务书，Agent 只能做好前 2 个</li>
+<li>纳甲：按乾内卦子寅辰、外卦午申戌等规则，把十二地支装入六爻；</li>
+<li>六亲：以卦宫五行与爻支五行的生克关系定出父母、兄弟、子孙、妻财、官鬼；</li>
+<li>世应：根据卦在八宫中的位置确定世爻与应爻，世为自己，应为对方或所测之事；</li>
+<li>六神：按日干起青龙、朱雀、勾陈、腾蛇、白虎、玄武，辅助判断人事属性。</li>
 </ul>
-
-<h2>总结</h2>
-<p>
-任务书是 Agent 协作的契约。五要素模板（目标、范围、上下文、输出要求、验收标准）
-把"模糊的期望"变成"可验证的交付物"。这套方法不仅适用于 AI Agent，
-也适用于任何远程协作场景——把话说清楚，是效率的起点。
-</p>
+<p>六亲是六爻断卦的核心：测财运看妻财爻，测事业官运看官鬼爻，测子女晚辈看子孙爻，测长辈文书看父母爻，测合作竞争看兄弟爻。用神选定之后，再以月建、日辰衡量用神的旺衰，看动爻对用神的生克冲合，就能逐步得出结论。</p>
+<h2>断卦的基本框架</h2>
+<p>拿到一个卦，先不要急着下结论，按以下顺序推理：</p>
+<ul>
+<li>定用神：根据所测之事确定用神爻，一事一用神，不可混杂；</li>
+<li>看旺衰：用神得月建、日辰生扶为旺，被月建日辰冲克为衰；</li>
+<li>察动变：动爻是用神之原神则吉，动爻克用神则凶，用神动而化进神、化回头生为吉，化退神、化回头克为凶；</li>
+<li>观世应：世应相生相合主和顺，相冲相克主冲突；</li>
+<li>断应期：用神旺相逢值逢合之时应事，用神休囚待旺相之时应事，旬空待出空填实之时应事。</li>
+</ul>
+<p>初学者最容易犯的错误是用卦名断吉凶（如见"困"卦就断困顿），实际上六爻判断以六亲生克为纲，卦名卦辞只作参考。先学会用神、旺衰、生克冲合、旬空月破这几个核心概念，就能应对大部分日常问题。</p>
+<h2>常见误区与建议</h2>
+<p>第一，一卦多问。同一卦同时问财运又问感情，用神混杂，必然难断。第二，反复摇卦。同一问题短期内反复占问，心念已乱，卦象失真，古训"再三渎，渎则不告"。第三，忽视日月。只盯动爻不看月建日辰，等于断案不看天时。第四，机械套用。断语必须结合所测之事的现实背景，同一个"妻财持世"，测求财与测婚姻含义完全不同。</p>
+<p>建议初学者先背熟六十四卦卦名与八宫卦序，再逐项练习装卦，用过去已经知道结果的事件做复盘验证，这是提升准确率最快的方法。六爻是实践性极强的学问，读十本书不如认真断一百个卦。</p>
 <div class="quote-block">
         给 Agent 的任务书，要具体到「能写失败测试」才算合格；给维护者的 PR，
         要具体到「红→绿证据链」才算专业。
