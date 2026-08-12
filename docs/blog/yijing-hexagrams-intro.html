@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>易经六十四卦入门：从八卦到卦象解读</title>
+<meta name="description" content="从三爻八卦到六爻成卦，讲清六十四卦的构成逻辑、卦序规律与解读方法，附八卦速记表与学习路径，零基础也能看懂《易经》。">
+<meta property="og:title" content="易经六十四卦入门：从八卦到卦象解读">
+<meta property="og:description" content="八卦三爻、六爻成卦、卦序规律与实用解读方法，零基础入门《易经》">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/yijing-hexagrams-intro.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/yijing-hexagrams-intro.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../tools.html" data-lang="zh">工具</a><a href="../tools.html" data-lang="en">Tools</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-08</div>
+    <h1 data-lang="zh">易经六十四卦入门：从八卦到卦象解读</h1>
+    <h1 data-lang="en">Yijing 64 hexagrams 101: from trigrams to reading hexagrams</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #易学 #易经 #六十四卦 #国学
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+<h2>背景</h2>
+      <p>
+        熟悉了八字、干支、六爻之后，下一步自然就是《易经》本身。六十四卦是《周易》的骨架，
+        也是奇门、六爻、梅花易数等术数体系的底层语言。这篇入门文章不讲玄虚的占断，
+        只把「八卦怎么来、六十四卦怎么组成、拿到一卦怎么读」讲清楚，零基础也能顺着读下来。
+      </p>
+
+      <h2>从三爻八卦说起</h2>
+      <p>
+        《易经》最基本的符号是<strong>爻（yáo）</strong>，分两种：一条实线「—」叫阳爻，
+        一条断开的线「--」叫阴爻。三个爻上下叠在一起，就组成一个<strong>卦</strong>，
+        共 2×2×2=8 种组合，也就是八卦：乾、兑、离、震、巽、坎、艮、坤。
+      </p>
+      <p>八卦各自有固定的象征物与方位，是后续所有解读的基础：</p>
+      <ul>
+        <li><strong>乾 ☰</strong>：天，健，父，西北（先天位南）</li>
+        <li><strong>兑 ☱</strong>：泽，悦，少女，西</li>
+        <li><strong>离 ☲</strong>：火，明，中女，南</li>
+        <li><strong>震 ☳</strong>：雷，动，长男，东</li>
+        <li><strong>巽 ☴</strong>：风，入，长女，东南</li>
+        <li><strong>坎 ☵</strong>：水，险，中男，北</li>
+        <li><strong>艮 ☶</strong>：山，止，少男，东北</li>
+        <li><strong>坤 ☷</strong>：地，顺，母，西南（先天位北）</li>
+      </ul>
+      <p>
+        记忆口诀是「乾三连、坤六断、震仰盂、艮覆碗、离中虚、坎中满、兑上缺、巽下断」——
+        前四个记笔画形状，后四个记中间那条爻的虚实，念几遍就熟了。
+      </p>
+
+      <h2>六爻成卦：上下相叠</h2>
+      <p>
+        把两个八卦上下叠放，就得到<strong>六爻卦</strong>：下方三爻叫<strong>下卦（内卦）</strong>，
+        上方三爻叫<strong>上卦（外卦）</strong>。8×8=64，这就是六十四卦的全部来源。
+      </p>
+      <p>读卦名时习惯「先上后下」，例如：</p>
+      <ul>
+        <li>上卦乾、下卦坤，叫<strong>天地否</strong>（否卦）</li>
+        <li>上卦坤、下卦乾，叫<strong>地天泰</strong>（泰卦）</li>
+        <li>上卦坎、下卦离，叫<strong>水火既济</strong></li>
+        <li>上卦离、下卦坎，叫<strong>火水未济</strong></li>
+      </ul>
+      <p>
+        泰卦和否卦是最好的一组对照：泰是「天地交而万物通」，否是「天地不交而万物不通」。
+        同一对卦，上下颠倒，含义几乎相反——这就是《序卦传》里「否极泰来」的来历。
+      </p>
+
+      <h2>卦序的两种编排</h2>
+      <p>常见的六十四卦顺序有两种，用途不同：</p>
+      <ul>
+        <li>
+          <strong>通行本卦序（《周易》顺序）</strong>：始于乾、坤，终于既济、未济，
+          按「非覆即变」的规律两两成对排列，体现事物发展的过程。
+        </li>
+        <li>
+          <strong>伏羲先天六十四卦方圆图</strong>：按二进制式的阴阳消长排列，
+          邵雍用以推演时间与方位，梅花易数的时间起卦常参考它。
+        </li>
+      </ul>
+      <p>
+        初学者先记通行本卦序即可：乾、坤、屯、蒙、需、讼、师、比、小畜、履……不必一次背完，
+        用到哪一卦查哪一卦，反复接触自然记住。
+      </p>
+
+      <h2>拿到一卦怎么读</h2>
+      <p>一个完整的六爻卦由四层信息构成，按顺序拆解就不会乱：</p>
+      <ul>
+        <li>
+          <strong>卦名与卦辞</strong>：整卦的定性判断。例如乾卦卦辞「元亨利贞」，是「创始、通达、适宜、正固」四德。
+        </li>
+        <li>
+          <strong>上下卦象征</strong>：下卦代表内部、根基、自己；上卦代表外部、环境、对方。两者关系（生、克、比、合）就是吉凶大势。
+        </li>
+        <li>
+          <strong>爻位与爻辞</strong>：从下往上数，初爻为起点、二爻为内卦中位、五爻为外卦中位（「九五之尊」即指此）、上爻为终局。得位（阳爻居阳位）、中正（二五爻）是判断单个爻吉凶的关键。
+        </li>
+        <li>
+          <strong>变卦（之卦）</strong>：动爻变化后形成的新卦，代表事情发展的结果。六爻占断中「本卦为始，变卦为终」。
+        </li>
+      </ul>
+      <p>
+        一句话总结解读顺序：<strong>先看卦辞定基调，再看上下卦关系定趋势，最后看动爻爻辞定应期与细节</strong>。
+      </p>
+
+      <h2>易学三大原则：变易、简易、不易</h2>
+      <p>
+        读《易经》如果只记卦辞，很快就会迷失在 384 条爻辞里。先建立三个原则再看任何一卦都会清晰很多：
+      </p>
+      <ul>
+        <li><strong>变易</strong>：万事万物都在变化，卦象只是某一时点的切片，所以占断要结合时间与情境。</li>
+        <li><strong>简易</strong>：复杂现象可以归约为阴阳两种力量的消长，先抓阴阳、五行、生克这三层主干。</li>
+        <li><strong>不易</strong>：变化的规律本身不变，比如「物极必反」「居中守正」这些原则放之四海皆准。</li>
+      </ul>
+
+      <h2>现代应用与学习路径</h2>
+      <p>六十四卦在今天至少有四个实用方向：</p>
+      <ul>
+        <li>
+          <strong>决策思维框架</strong>：用「时、位、中、应」分析一个决策的处境（时）、位置（位）、是否守正（中）、有无外援（应），是很实用的结构化思考工具。
+        </li>
+        <li>
+          <strong>六爻与梅花起卦的基础</strong>：六爻纳甲、梅花易数都以卦象拆解为前提，学懂六十四卦等于给占断类术数打好地基。
+        </li>
+        <li>
+          <strong>奇门遁甲的理论衔接</strong>：奇门九宫配八卦、八门配卦象，八卦方位与节气对应，底层还是这套符号系统。
+        </li>
+        <li>
+          <strong>文化阅读的通行证</strong>：《易经》成语（否极泰来、谦谦君子、自强不息、厚德载物）遍布日常，读卦能直接提升古文与传统文化理解力。
+        </li>
+      </ul>
+      <p>推荐的学习顺序：</p>
+      <ol>
+        <li>先背熟八卦的卦画、卦名与象征（一周内可以完成）；</li>
+        <li>用「上下卦组合」的方式推导六十四卦，不依赖死背；</li>
+        <li>精读乾坤两卦的卦辞爻辞，理解「时位」思维；</li>
+        <li>再选 10-20 个常用卦（泰、否、谦、豫、随、蛊、既济、未济等）逐卦精读；</li>
+        <li>最后结合《系辞传》理解易理，再决定是否进入六爻或梅花等应用分支。</li>
+      </ol>
+
+      <h2>参考来源</h2>
+      <ul>
+        <li>《周易》通行本经文与《十翼》（彖、象、系辞等）</li>
+        <li>朱熹《周易本义》对卦序与卦爻辞的整理</li>
+        <li>邵雍先天易学与梅花易数相关文献（卦序、方圆图）</li>
+      </ul>
+      <div class="quote-block">
+        给 Agent 的任务书，要具体到「能写失败测试」才算合格；给维护者的 PR，
+        要具体到「红→绿证据链」才算专业。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>
