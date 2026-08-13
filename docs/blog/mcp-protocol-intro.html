@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCP 协议入门：AI Agent 的工具调用标准</title>
+<meta name="description" content="MCP（Model Context Protocol）是什么：Host/Client/Server 三层架构、Tools/Resources/Prompts 三种原语、stdio 与 Streamable HTTP 传输，附最小 Python 实现与实战避坑清单。">
+<meta property="og:title" content="MCP 协议入门：AI Agent 的工具调用标准">
+<meta property="og:description" content="从概念、架构到最小实现，一次讲清 MCP 协议">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/mcp-protocol-intro.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/mcp-protocol-intro.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../tools.html" data-lang="zh">工具</a><a href="../tools.html" data-lang="en">Tools</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-08</div>
+    <h1 data-lang="zh">MCP 协议入门：AI Agent 的工具调用标准</h1>
+    <h1 data-lang="en">MCP protocol intro: the tool-calling standard for AI agents</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #AI Agent #MCP #工具调用 #协议
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+<h2>为什么 AI Agent 需要一套工具调用标准</h2>
+<p>
+2024 年底之前，给大模型接工具基本是「各家自扫门前雪」：OpenAI 有 Function Calling，
+Anthropic 有 tool use，各家 SDK 的参数格式、返回结构、鉴权方式各不相同。
+一个 Agent 想同时调用 GitHub API、数据库和公司内部系统，就要为每个工具写一遍胶水代码，
+每换一个模型厂商就要重写一遍。MCP（Model Context Protocol，模型上下文协议）就是
+Anthropic 在 2024 年 11 月开源的一套统一标准，目标是让「模型 ↔ 工具」的连接方式
+像 USB 接口一样即插即用。本文从概念、架构到最小实现，讲清 MCP 到底是什么、怎么用。
+</p>
+
+<h2>MCP 的三个核心概念</h2>
+<p>MCP 把参与者分成三层，理解这三层就理解了整个协议：</p>
+<ul>
+<li><strong>Host（宿主）</strong>：运行大模型的应用，比如 Claude Desktop、IDE 插件或你自己的 Agent 框架。它负责调度模型和工具。</li>
+<li><strong>Client（客户端）</strong>：Host 内部与 MCP Server 建立一对一连接的组件。一个 Host 可以同时挂多个 Client。</li>
+<li><strong>Server（服务端）</strong>：暴露工具、资源和提示词的进程或服务。每个 Server 负责一个领域，比如「Git 操作 Server」「数据库查询 Server」。</li>
+</ul>
+<p>
+类比一下：Host 是电脑主机，Client 是 USB 接口，Server 是插上去的键盘、鼠标、U 盘。
+键盘厂商不用关心你的电脑装了什么系统，只要实现 USB 标准就行——MCP Server 也一样，
+写一次，任何支持 MCP 的 Host 都能直接用。
+</p>
+
+<h2>三种原语：Tools、Resources、Prompts</h2>
+<p>MCP Server 对外暴露三类能力，各自解决不同的问题：</p>
+<ul>
+<li><strong>Tools（工具）</strong>：可执行的动作，比如 <code>create_issue</code>、<code>search_web</code>。
+模型决定何时调用，调用参数由 JSON Schema 声明。这是用得最多的一类。</li>
+<li><strong>Resources（资源）</strong>：只读的数据，比如数据库表结构、配置文件、日志片段。
+它们像「附带的上下文」，Host 可以按需把资源内容注入给模型，让模型不靠工具也能读到数据。</li>
+<li><strong>Prompts（提示词模板）</strong>：可复用的提示词，比如「代码审查」「周报生成」。
+Host 可以列出这些模板并让用户一键触发，相当于把团队的最佳实践固化成了菜单。</li>
+</ul>
+<p>
+新手常犯的错是「什么都做成 Tools」。判断标准很简单：需要写操作就做 Tool，
+只需要读就给模型看就做 Resource，纯粹是提示词就做 Prompt。
+</p>
+
+<h2>传输层：stdio 与 Streamable HTTP</h2>
+<p>MCP 的传输方式主要有两种，选型取决于你的部署形态：</p>
+<ul>
+<li><strong>stdio</strong>：Server 作为子进程被 Host 拉起，通过标准输入输出通信。
+适合本地工具，比如 Claude Desktop 直接拉起一个 Python 脚本。零网络开销、无需鉴权，最简单。</li>
+<li><strong>Streamable HTTP</strong>：Server 是独立 HTTP 服务，支持 SSE 流式响应。
+适合远程部署：一台服务器上跑多个 Server，多个 Host 通过网络访问，需要鉴权（通常是 Bearer Token）。</li>
+</ul>
+<p>
+2025 年 3 月协议更新后，官方推荐新项目直接用 Streamable HTTP；本地开发调试仍以 stdio 为主。
+不管哪种传输，上层交换的消息格式是同一套 JSON-RPC 2.0，所以 Client 侧逻辑可以复用。
+</p>
+
+<h2>一个最小 MCP Server：Python 示例</h2>
+<p>
+用官方 <code>mcp</code> Python SDK 写一个「今日天气」工具，核心代码不到 20 行：
+</p>
+<pre><code>from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("weather")
+
+@mcp.tool()
+def get_weather(city: str) -&gt; str:
+    """查询指定城市的天气（示例）。"""
+    return f"{city}：晴，26°C，适合出门。"
+
+if __name__ == "__main__":
+    mcp.run(transport="stdio")
+</code></pre>
+<p>
+把这段代码跑起来，任何 MCP Host 都能发现 <code>get_weather</code> 工具、读取它的参数 schema
+并调用它。注意两点：一是函数 docstring 会被当作工具描述喂给模型，直接影响模型判断
+「什么时候该用这个工具」，要写清楚；二是 <code>transport</code> 参数换成
+<code>"streamable-http"</code> 就是网络版，部署形态变了，代码几乎不用动。
+</p>
+
+<h2>MCP 与 Function Calling 的区别</h2>
+<p>很多人问「有了 Function Calling 为什么还要 MCP」，二者不是替代关系而是分工关系：</p>
+<ul>
+<li><strong>Function Calling 是模型能力</strong>：模型在推理时输出「我想调用函数 X，参数是 Y」的结构化结果。它是模型侧的约定。</li>
+<li><strong>MCP 是连接标准</strong>：它规范的是工具如何被发现、描述、调用、传结果，是工具侧的约定。</li>
+<li><strong>典型组合</strong>：Host 通过 MCP 拿到工具列表和 schema，把 schema 转成模型认识的 Function 定义，模型返回调用意图后，Host 再通过 MCP 执行并回传结果。两者配合使用。</li>
+</ul>
+<p>
+所以 MCP 的价值不在「取代」任何东西，而在「一次接入、处处可用」：你的 Agent 框架只要
+实现一次 MCP Client，社区里上千个现成 Server（Git、Slack、浏览器、数据库……）全部开箱即用。
+</p>
+
+<h2>实战建议与常见坑</h2>
+<ul>
+<li><strong>工具粒度要小</strong>：一个 Tool 只做一件事，参数越少越好。工具名用动词开头（<code>create_issue</code> 而不是 <code>issue</code>），模型更好理解。</li>
+<li><strong>描述写清楚触发条件</strong>：docstring 里写明「什么时候用、什么时候不用」，能显著减少模型误调用。</li>
+<li><strong>错误要结构化返回</strong>：工具内部 try/except 后返回 <code>{success: false, error: "..."}</code>，而不是抛异常让连接断开——模型能读到错误信息自我修正。</li>
+<li><strong>敏感操作加确认层</strong>：删除、转账这类工具建议在 Host 侧加人工确认，别让模型直接执行。</li>
+<li><strong>注意超时与流式</strong>：长任务工具要支持进度回报，避免 Host 端等超时。</li>
+</ul>
+
+<h2>小结</h2>
+<p>
+MCP 把「模型调用工具」这件事从每家私有的胶水代码，变成了一个开放的公共标准。
+对一人公司和小团队尤其划算：工具写一次，Claude、自建 Agent、IDE 全都能用，
+不用为每个入口重复开发。上手路径也很短——先写一个 stdio 的最小 Server 跑通链路，
+再按需换成 HTTP 部署，最后补上鉴权和错误处理，就能稳定支撑日常的 Agent 工作流了。
+</p>
+      <div class="quote-block">
+        给 Agent 的任务书，要具体到「能写失败测试」才算合格；给维护者的 PR，
+        要具体到「红→绿证据链」才算专业。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>
