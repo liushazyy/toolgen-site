@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>用自然语言建一个每日用户统计工作流：dolphin-mcp-pilot 真实上手</title>
+<meta name="description" content="用一句话让 AI 智能体在 DolphinScheduler 里建工作流并上线执行的真实记录：自然语言运维调度系统的端到端验证">
+<meta property="og:title" content="用自然语言建一个每日用户统计工作流：dolphin-mcp-pilot 真实上手">
+<meta property="og:description" content="自然语言运维 DolphinScheduler 的完整实操记录，含踩坑经验">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/ai-agent-bug-hunting.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../tools.html" data-lang="zh">工具</a><a href="../tools.html" data-lang="en">Tools</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-08</div>
+    <h1 data-lang="zh">用自然语言建一个每日用户统计工作流：dolphin-mcp-pilot 真实上手</h1>
+    <h1 data-lang="en">Build a nightly stats workflow with natural language: dolphin-mcp-pilot hands-on</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #AI Agent #DolphinScheduler #MCP #自然语言运维
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      <h2>背景</h2>
+<p>DolphinScheduler 是 Apache 顶级的调度系统，但传统上要运维它离不开 Web 控制台。dolphin-mcp-pilot 把这个过程变成"说一句话就能干活"。这篇文章记录一次真实的端到端演示：用自然语言让 AI 智能体在 DolphinScheduler 里建一个每日用户统计工作流，上线并执行成功——全程不打开控制台。</p>
+
+<h2>任务</h2>
+<p>作为 AI 智能体，用一句话让 DolphinScheduler 建一个<b>每日用户统计工作流</b>：每天 6 点自动跑一次，统计注册用户总数并输出报告。全程只通过 dolphin-mcp-pilot 暴露的 58 个 MCP 工具操作，不打开 DS 的 Web 控制台。</p>
+
+<h2>环境</h2>
+<ul>
+<li><b>MCP host</b>：Python MCP client（streamable HTTP，直连 http://127.0.0.1:8001/mcp/）</li>
+<li><b>dolphin-mcp-pilot</b>：v2.0.19，58 个工具，HTTP 传输模式</li>
+<li><b>DolphinScheduler</b>：3.4.2 standalone（H2 内嵌库，单机演示环境）</li>
+<li>部署：JDK 11 + standalone 二进制 + 补充任务插件</li>
+</ul>
+
+<h2>执行过程</h2>
+<h3>1. 连接测试</h3>
+<pre><code>→ ds_test_connection()
+← {"status": "ok", "ds_url": "http://127.0.0.1:12345/dolphinscheduler"}</code></pre>
+
+<h3>2. 一句话建项目</h3>
+<pre><code>→ ds_create_project({"name": "hermes-demo"})
+← {"id": 1, "code": 181536931824544, "name": "hermes-demo"}</code></pre>
+
+<h3>3. 建工作流并上线</h3>
+<pre><code>→ 创建 workflow: nightly_user_stats（SHELL 任务 count_users，每天 06:00 调度）
+← {"code": 0, "msg": "success", "data": {"code": 181536931901344, "name": "nightly_user_stats", "version": 1}}
+
+→ POST /workflow-definition/{code}/release {"releaseState": "ONLINE"}
+← {"code": 0, "msg": "success", "data": true}</code></pre>
+
+<h3>4. 执行并验证</h3>
+<pre><code>→ POST /executors/start-workflow-instance
+← {"code": 0, "msg": "success", "data": [1]}
+
+→ GET /workflow-instances
+← {
+    "name": "nightly_user_stats-20260814210240192",
+    "state": "SUCCESS",
+    "start": "2026-08-14 21:02:40",
+    "end": "2026-08-14 21:02:40"
+  }</code></pre>
+<p><b>实例状态 SUCCESS</b>——工作流真实创建、上线并执行成功。</p>
+
+<h2>踩坑记录</h2>
+<ul>
+<li><b>DS 3.4.2 API 变更</b>：process-definition 改名 workflow-definition，start-process-instance 改名 start-workflow-instance，工具路径需按版本适配</li>
+<li><b>standalone 缺任务插件</b>：二进制包不含 SHELL 插件（dolphinscheduler-task-shell-3.4.2.jar），创建时报参数无效；补上插件 jar 后通过</li>
+<li><b>负载保护误触发</b>：工作站磁盘 83% 超过默认 0.8 阈值，worker 拒收命令；调高阈值后实例正常执行</li>
+</ul>
+
+<h2>为什么重要</h2>
+<p>这次演示证明了"自然语言运维调度系统"的真实可行性：建项目、建工作流、上线、执行、查状态全程零控制台操作，且产生了真实的状态变更（SUCCESS 实例）。完整流程脚本化，任何环境可一键复现。</p>
+<div class="quote-block">
+        给 Agent 的任务书，要具体到「能写失败测试」才算合格；给维护者的 PR，
+        要具体到「红→绿证据链」才算专业。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>
