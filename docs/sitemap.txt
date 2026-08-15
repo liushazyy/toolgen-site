@@ -23,5 +23,7 @@ https://toolgen.xyz/blog/liuyao-intro.html
 https://toolgen.xyz/blog/yijing-hexagrams-intro.html
 https://toolgen.xyz/blog/mcp-protocol-intro.html
 https://toolgen.xyz/blog/shier-changsheng.html
+https://toolgen.xyz/blog/dolphin-mcp-pilot-nl-workflow.html
+https://toolgen.xyz/blog/shishen-intro.html
 https://toolgen.xyz/about.html
 https://toolgen.xyz/contact.html

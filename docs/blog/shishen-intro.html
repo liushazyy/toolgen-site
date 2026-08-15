@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>八字十神详解：日主与其他干支的十种关系</title>
+<meta name="description" content="十神（比肩劫财食神伤官财官印杀）是八字最核心的关系模型。一文讲清十神推导、含义、六亲对应与三步读盘法，附速查与常见误区。">
+<meta property="og:title" content="八字十神详解：日主与其他干支的十种关系">
+<meta property="og:description" content="八字十神详解：五种生克关系 × 阴阳 = 十神，含速查表、性格解读与读盘三步法">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/shishen-intro.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/shishen-intro.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../tools.html" data-lang="zh">工具</a><a href="../tools.html" data-lang="en">Tools</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-08</div>
+    <h1 data-lang="zh">八字十神详解：日主与其他干支的十种关系</h1>
+    <h1 data-lang="en">Bazi Ten Gods explained: the 10 relationships of the day master</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #八字 #十神 #易学 #命理
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      
+<h2>背景</h2>
+<p>学完《八字入门》里天干地支、五行生克之后，很多初学者会卡在同一个问题上：排盘软件把八个字排出来了，可"比肩、劫财、食神、伤官、偏财、正财、七杀、正官、偏印、正印"这些名字是什么意思？为什么同一个日主，遇到不同的天干地支，命运解读完全不同？</p>
+<p>答案就在十神（Shi Shen / Ten Gods）——八字命理最核心的关系模型。十神本质上是<strong>日主（日干）与其他七个字之间生克关系的命名体系</strong>。搞懂十神，你才能读懂任何一份八字命盘的"人物关系图"。</p>
+
+<h2>十神怎么来的：五种生克关系 × 阴阳</h2>
+<p>五行之间有五种关系：<strong>同我（比和）、生我（印）、我生（食伤）、克我（官杀）、我克（财）</strong>。每一种关系再按阴阳分两类，正好 5×2=10 种，就是十神：</p>
+<ul>
+  <li><strong>同我</strong>：比肩（同阴阳）、劫财（异阴阳）</li>
+  <li><strong>生我</strong>：正印（同阴阳）、偏印（异阴阳）</li>
+  <li><strong>我生</strong>：食神（同阴阳）、伤官（异阴阳）</li>
+  <li><strong>克我</strong>：正官（异阴阳）、七杀（同阴阳）</li>
+  <li><strong>我克</strong>：正财（异阴阳）、偏财（同阴阳）</li>
+</ul>
+<p>注意一个容易记反的点：十神里的"正/偏"不是按五行阴阳简单对应的，口诀是<strong>"异性相吸为正，同性相斥为偏"</strong>——但正印、正官、正财是异性关系，而食神、比肩是同性关系。下面给一张速查表，以日主为参照：</p>
+<ul>
+  <li>日主 × 同类五行 = 比肩 / 劫财</li>
+  <li>日主 × 生我五行 = 正印 / 偏印（枭神）</li>
+  <li>日主 × 我生五行 = 食神 / 伤官</li>
+  <li>日主 × 克我五行 = 正官 / 七杀</li>
+  <li>日主 × 我克五行 = 正财 / 偏财</li>
+</ul>
+
+<h2>十神各自代表什么</h2>
+<h3>1. 比肩与劫财：同辈与竞争</h3>
+<p>比肩是与日主同五行同阴阳，代表兄弟、朋友、同辈、合作者，性格上独立自主、自尊心强。劫财（同五行异阴阳）代表竞争对手、争夺者，也象征行动力与冒险精神，但容易破财、好胜。命理里有"比劫夺财"的说法，指财星遇到比肩劫财围攻，代表钱财易被分走、合伙需谨慎。</p>
+<h3>2. 食神与伤官：才华的输出通道</h3>
+<p>食神（我生、同性）温和，代表口福、才艺、表达、享乐，性格乐观随和；伤官（我生、异性）锋芒外露，代表创意、技术、反叛、不服管束。古书说"食神制杀""伤官配印"都是贵格，意思是才华要用得其所。伤官旺的人聪明但容易说话得罪人，适合技术、艺术、自由职业。</p>
+<h3>3. 正财与偏财：金钱观</h3>
+<p>正财（我克、异性）代表正当收入、工资、稳定的资产与妻子（男命），性格务实节俭；偏财（我克、同性）代表意外之财、投资、生意、父亲（男命），性格豪爽、善抓机会，但也来得快去得快。</p>
+<h3>4. 正官与七杀：规则与压力</h3>
+<p>正官（克我、异性）代表官职、名誉、规则、上司，性格自律守规矩，是"管理"的象；七杀（克我、同性）代表压力、竞争、权力、魄力，性格果断敢闯，但压力大、易急躁。官杀在命理中既管事业也管"约束"，官杀过旺无制则身弱难担。</p>
+<h3>5. 正印与偏印：学习与庇护</h3>
+<p>正印（生我、异性）代表母亲、学历、庇护、知识，性格仁慈、爱学习、重名誉；偏印（生我、同性）代表偏门学问、灵感、宗教玄学，性格孤僻敏锐。印星是"吸收能力"的象，印旺的人学习能力强，但也容易依赖、想得多做得少。</p>
+
+<h2>十神的实际用法：三步读盘</h2>
+<p>拿到一张八字盘，用十神读盘只需要三步：</p>
+<ul>
+  <li><strong>第一步，定日主旺衰</strong>：看月令（月支）与日主的关系，判断身强还是身弱。身强喜克泄耗（官杀、食伤、财），身弱喜生扶（印、比劫）。</li>
+  <li><strong>第二步，找"用神"</strong>：身强找官杀/食伤/财为用，身弱找印/比劫为用。用神得力，命局层次高。</li>
+  <li><strong>第三步，看十神组合</strong>：比如"伤官配印"主才华有靠山，"食神制杀"主以柔克刚、掌权，"财滋弱杀"主富贵双全。组合比单个十神更重要。</li>
+</ul>
+<p>需要特别提醒：<strong>十神没有绝对的好坏</strong>。七杀凶，但"七杀有制化为权"；正印好，但"印重身旺"反而懒惰依赖。解读必须结合旺衰、位置（年月日时）、干支组合综合判断。</p>
+
+<h2>十神与六亲的对应</h2>
+<p>十神还承担着"六亲定位"的功能，看亲人关系先看十神（男命女命不同）：</p>
+<ul>
+  <li>正印=母亲，偏印=继母/祖父；正财=妻子（男命），偏财=父亲（男命）</li>
+  <li>正官=丈夫（女命）/儿子（男命），七杀=情人/女儿（女命）/儿子（男命）</li>
+  <li>比肩=兄弟，劫财=姐妹；食神=女儿（女命），伤官=儿子（女命）</li>
+</ul>
+<p>这些对应是传统命理的约定俗成，用于"看六亲"，但现代解读更重视十神所代表的<strong>性格与行为模式</strong>，把它当作理解自己和他人关系的工具，而不是宿命。</p>
+
+<h2>常见误区</h2>
+<ul>
+  <li><strong>误区一：十神多就是好</strong>。十神讲究组合与平衡，一个十神扎堆反而失衡，比如"比劫林立"主竞争破财。</li>
+  <li><strong>误区二：正官只当官看</strong>。正官在现代可以对应职业化、规则、体制内，也可以对应自律与责任感，不必拘泥于"当官"。</li>
+  <li><strong>误区三：忽略阴阳</strong>。同为"克我"，正官与七杀的性格、吉凶差别极大，只看五行不看阴阳等于没学十神。</li>
+  <li><strong>误区四：十神代替旺衰</strong>。十神关系建立在日主旺衰之上，身强身弱判断错了，后面全错。建议先掌握《八字入门》里的旺衰判断，再学十神。</li>
+</ul>
+
+<h2>小结</h2>
+<p>十神是把"五行生克"翻译成"人际关系与人生主题"的桥梁：印是学习庇护、比劫是同行竞争、食伤是才华输出、财是资源获取、官杀是规则压力。学习路径建议：天干地支 → 五行旺衰 → 十神含义 → 十神组合（格局）。下一篇文章会讲十神组合成的"格局"（正官格、七杀格、食神格等），以及大运流年如何引动十神。</p>
+      <div class="quote-block">
+        给 Agent 的任务书，要具体到「能写失败测试」才算合格；给维护者的 PR，
+        要具体到「红→绿证据链」才算专业。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>
