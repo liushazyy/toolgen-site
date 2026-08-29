@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>六爻断卦入门：用神、原神、忌神与旺衰判断</title>
+<meta name="description" content="六爻装好卦之后怎么断？本文讲清断卦四步：定用神、找原忌仇神、看旺衰、看动静生克，附月建日辰与空亡的实战处理。">
+<meta property="og:title" content="六爻断卦入门：用神、原神、忌神与旺衰判断">
+<meta property="og:description" content="用神优先、旺衰为纲、生克为用——六爻断卦的核心框架">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/liuyao-duangua.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/liuyao-duangua.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../tools.html" data-lang="zh">工具</a><a href="../tools.html" data-lang="en">Tools</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-08</div>
+    <h1 data-lang="zh">六爻断卦入门：用神、原神、忌神与旺衰判断</h1>
+    <h1 data-lang="en">Liuyao interpretation: yongshen, yuanshen, jishen and strength analysis</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #六爻 #易学 #用神 #断卦
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      <h2>背景</h2>n<p>六爻预测的完整流程是起卦、装卦、断卦三步。前两篇文章讲清了起卦和装卦，但很多初学者装完卦就卡住了：卦盘上密密麻麻的地支、六亲、世应都齐了，下一步该看什么？断卦不是「凭感觉说吉凶」，而是一套有固定顺序的推理过程。本文把断卦拆成四步：定用神、找原忌仇神、看旺衰、看动静生克，最后讲清楚空亡这个最常见的坑。照着这个顺序走，第一张卦就能断出有依据的结论。</p>nn<h2>第一步：定用神——所测之事在卦里的代表</h2>n<p>用神是断卦的起点，它是「所测之事」在六亲中的对应者。用神取错，后面全错。常用取用规则如下：</p>n<ul>n<li><strong>测财运、求财、生意利润</strong>：以妻财为用神；</li>n<li><strong>测官运、升职、官司、工作</strong>：以官鬼为用神（测工作也可兼看父母）；</li>n<li><strong>测父母、长辈、文书、学业、房产</strong>：以父母为用神；</li>n<li><strong>测子女、晚辈、下属、宠物</strong>：以子孙为用神；</li>n<li><strong>测兄弟、朋友、同辈、竞争</strong>：以兄弟为用神；</li>n<li><strong>测自己</strong>：以世爻为用神；<strong>测对方</strong>：以应爻为用神。</li>n</ul>n<p>卦盘上每个六亲都有对应的地支爻位。找到用神爻之后，把它标记出来，后面所有分析都围绕它展开。用神在卦中不出现时（六亲不全），可以到伏神里找，这是进阶内容，新手先掌握「用神出现」的常规情况。</p>nn<h2>第二步：找原神、忌神、仇神</h2>n<p>围绕用神，其他爻分成三类关系：</p>n<ul>n<li><strong>原神</strong>：生用神的爻。原神旺相，用神有源头，事情有助力；</li>n<li><strong>忌神</strong>：克用神的爻。忌神发动或旺相，用神受伤，事情有阻力；</li>n<li><strong>仇神</strong>：生忌神、克原神的爻。仇神是「帮倒忙」的一方，它旺相会让忌神更凶、原神更弱。</li>n</ul>n<p>举例：测财运，妻财为用神。妻财属木，则生木的水（父母）为原神，克木的金（兄弟）为忌神，生金的土（官鬼）为仇神。判断时重点看两个问题：原神能不能生到用神？忌神会不会来克用神？</p>nn<h2>第三步：看旺衰——月建与日辰</h2>n<p>旺衰决定爻的力量大小，是断卦的「权重」依据。主要看两处：</p>n<ul>n<li><strong>月建</strong>：起卦当月的地支。爻与月建同地支为「月建临之」最旺；受月建生扶为旺；被月建克为衰。</li>n<li><strong>日辰</strong>：起卦当天的地支。日辰对卦中所有爻都有生克权，爻得日辰生扶为旺，被日辰冲克为衰。</li>n</ul>n<p>旺衰的量化经验：用神得月建、日辰生扶，或临月建，为「旺相」，事情根基扎实；用神被月建、日辰克泄，为「休囚」，事情力量不足。旺相的用神即使被忌神克，也未必凶；休囚的用神即使有原神生，也未必有力——先看力量，再看生克。</p>nn<h2>第四步：看动静生克</h2>n<p>卦中六爻分动静：动爻有权，静爻无权。判断生克时遵循两条铁律：</p>n<ul>n<li><strong>动爻可以生克静爻，静爻不能生克动爻</strong>（静爻只能被动接受）；</li>n<li><strong>动爻变出的变爻，只对本位动爻起作用</strong>，变爻回头生、回头克、回头冲，直接影响该动爻的力量。</li>n</ul>n<p>综合判断的优先级：用神旺相 + 原神发动生用神 + 忌神安静或受制 = 吉；用神休囚 + 忌神发动克用神 + 原神安静或受制 = 凶。多数卦不用看得很复杂，抓住「用神有没有力量、有没有人帮、有没有人害」三点，结论就出来了。</p>nn<h2>空亡：最常见的判断陷阱</h2>n<p>空亡（旬空）是按起卦日的干支旬推算的：甲子旬中戌亥空，甲戌旬中申酉空，甲申旬中午未空，甲午旬中辰巳空，甲辰旬中寅卯空，甲寅旬中子丑空。用神临空亡，代表「暂时落空、事情还没落实」。</p>n<ul>n<li><strong>真空</strong>：用神休囚又逢空亡，事情难以落实；</li>n<li><strong>假空</strong>：用神旺相逢空亡，只是暂时受阻，出空（过了本旬）或填实（逢值之日）后应验；</li>n<li><strong>动爻逢空</strong>：动爻空亡力量打折，出空后发动才有效。</li>n</ul>n<p>断空亡的要点是：先看旺衰再断空。旺相逢空是「暂时没到」，休囚逢空是「真的没有」，两者结论完全不同。</p>nn<h2>新手断卦检查单</h2>n<ul>n<li>用神取对了吗？测的事对应哪个六亲？</li>n<li>原神、忌神、仇神分别是谁？它们动不动？</li>n<li>用神在月建、日辰下是旺还是衰？</li>n<li>动爻里有没有忌神克用神、原神生用神？</li>n<li>用神空亡没有？空亡是真还是假？</li>n</ul>n<p>按这个顺序走完五步，再下结论。断卦的准确率不来自灵感，而来自流程的完整——每一步都做对，结论自然可靠。</p>
+      <div class="quote-block">
+        断卦四步：先定用神，再分原忌，三看旺衰，四察动静。顺序不乱，吉凶自明。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>
