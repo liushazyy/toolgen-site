@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>思维链提示词工程：让 AI 从猜答案变成算答案</title>
-<meta name="description" content="思维链（Chain-of-Thought）提示词实战指南：零样本触发、少样本示例、格式约束、自洽性投票四层用法，附 6 套可直接复制的模板与 5 个常见陷阱。">
+<meta name="description" content="思维链（Chain-of-Thought）提示词实战指南：零样本触发、少样本示例、格式约束、自洽性投票四层用法，附 7 套可直接复制的模板与 5 个常见陷阱。">
 <meta property="og:title" content="思维链提示词工程：让 AI 从猜答案变成算答案">
-<meta property="og:description" content="零样本 CoT、少样本推理、自洽性投票，附 6 套可复制模板与检查单">
+<meta property="og:description" content="零样本 CoT、少样本推理、自洽性投票，附 7 套可复制模板与检查单">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://toolgen.xyz/blog/prompt-chain-of-thought.html">
 <meta property="og:image" content="https://toolgen.xyz/og-image.svg">
@@ -67,7 +67,7 @@
     <div class="prose" style="max-width:820px;">
 
       <h2>背景</h2>
-<p>大模型直接回答多步问题时经常翻车：两位数乘法算错、逻辑题前后矛盾、代码调试越改越乱。换更大模型、加算力能改善，但最便宜有效的一招在提示词里——思维链（Chain-of-Thought，简称 CoT）：让模型先把推理过程写出来，再给最终答案。本文讲透思维链的四种用法：零样本触发、少样本示例、输出格式约束、自洽性投票，附 6 套可直接复制的模板和 5 个常见陷阱。适合所有写提示词的人，也适合做 AI Agent 时给子任务设计指令。</p>
+<p>大模型直接回答多步问题时经常翻车：两位数乘法算错、逻辑题前后矛盾、代码调试越改越乱。换更大模型、加算力能改善，但最便宜有效的一招在提示词里——思维链（Chain-of-Thought，简称 CoT）：让模型先把推理过程写出来，再给最终答案。本文讲透思维链的四种用法：零样本触发、少样本示例、输出格式约束、自洽性投票，附 7 套可直接复制的模板和 5 个常见陷阱。适合所有写提示词的人，也适合做 AI Agent 时给子任务设计指令。</p>
 
 <h2>什么是思维链：先推理，后作答</h2>
 <p>大模型是逐 token 生成文本的。直接问「答案是什么」，模型倾向于凭模式联想直接吐一个结果，中间过程被跳过；而多步任务恰恰需要中间过程。思维链的做法只有一个：要求模型把推理步骤显式写出来。步骤一旦落到文字上，每一步都成为下一步的上下文，错误率大幅下降，而且答案可检查、可追究。</p>
