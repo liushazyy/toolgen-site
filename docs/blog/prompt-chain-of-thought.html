@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>思维链提示词工程：让 AI 从猜答案变成算答案</title>
+<meta name="description" content="思维链（Chain-of-Thought）提示词实战指南：零样本触发、少样本示例、格式约束、自洽性投票四层用法，附 6 套可直接复制的模板与 5 个常见陷阱。">
+<meta property="og:title" content="思维链提示词工程：让 AI 从猜答案变成算答案">
+<meta property="og:description" content="零样本 CoT、少样本推理、自洽性投票，附 6 套可复制模板与检查单">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/prompt-chain-of-thought.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/prompt-chain-of-thought.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../tools.html" data-lang="zh">工具</a><a href="../tools.html" data-lang="en">Tools</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-08</div>
+    <h1 data-lang="zh">思维链提示词工程：让 AI 从猜答案变成算答案</h1>
+    <h1 data-lang="en">Chain-of-thought prompting: from guessing to reasoning</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #提示词工程 #思维链 #AI Agent #大模型
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      <h2>背景</h2>
+<p>大模型直接回答多步问题时经常翻车：两位数乘法算错、逻辑题前后矛盾、代码调试越改越乱。换更大模型、加算力能改善，但最便宜有效的一招在提示词里——思维链（Chain-of-Thought，简称 CoT）：让模型先把推理过程写出来，再给最终答案。本文讲透思维链的四种用法：零样本触发、少样本示例、输出格式约束、自洽性投票，附 6 套可直接复制的模板和 5 个常见陷阱。适合所有写提示词的人，也适合做 AI Agent 时给子任务设计指令。</p>
+
+<h2>什么是思维链：先推理，后作答</h2>
+<p>大模型是逐 token 生成文本的。直接问「答案是什么」，模型倾向于凭模式联想直接吐一个结果，中间过程被跳过；而多步任务恰恰需要中间过程。思维链的做法只有一个：要求模型把推理步骤显式写出来。步骤一旦落到文字上，每一步都成为下一步的上下文，错误率大幅下降，而且答案可检查、可追究。</p>
+<p>思维链不是某个模型的专属能力，它是指令层面的技巧，对主流大模型普遍有效。实际使用时按「触发—示范—约束—投票」四层递进，效果从够用到接近上限：</p>
+<ul>
+<li>触发：用一句话开启推理模式（零样本 CoT）；</li>
+<li>示范：给出带完整过程的示例，教模型照做（少样本 CoT）；</li>
+<li>约束：规定输出格式，把过程和结论分开；</li>
+<li>投票：多次采样取多数答案，压掉随机错误（自洽性）。</li>
+</ul>
+<p>下面每个模板都可以直接复制使用，把尖括号里的内容换成你的实际问题。</p>
+
+<h2>零样本思维链：一句话开启推理模式</h2>
+<p>最简单的用法，在问题后面加一句引导，模型就会先推理后作答。零样本（Zero-shot）意味着不需要准备示例，适合临时提问和快速验证。</p>
+<h3>模板 1：通用拆解</h3>
+<pre style="background:var(--ink-2);border:1px solid var(--line-0);padding:22px;border-radius:4px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;">问题：&lt;你的问题&gt;
+请先分步骤推理，每一步列出依据，最后单独给出结论。</pre>
+<h3>模板 2：限定步骤数与格式</h3>
+<pre style="background:var(--ink-2);border:1px solid var(--line-0);padding:22px;border-radius:4px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;">问题：&lt;你的问题&gt;
+请用不超过 5 步完成推理，每步一行；最后输出格式：
+结论：&lt;一行结论&gt;
+依据：&lt;关键依据，一两句&gt;</pre>
+<p>注意：模板 2 的「结论放最后」很关键。把结论前置会导致模型先写结论、再为结论编理由，推理质量反而下降。</p>
+
+<h2>少样本思维链：用示例教模型展示过程</h2>
+<p>模型不擅长的时候，给它 1-3 个「问题 + 完整推理过程 + 答案」的示例，它就会模仿这个格式。示例要短、要正确、要贴题。少样本（Few-shot）的效果通常优于零样本，代价是每次请求多花一些 token。</p>
+<h3>模板 3：数学推理</h3>
+<pre style="background:var(--ink-2);border:1px solid var(--line-0);padding:22px;border-radius:4px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;">示例 1：
+问：小明有 3 个苹果，又买了 5 个，吃掉 2 个，还剩几个？
+答：3 + 5 = 8；8 - 2 = 6。结论：还剩 6 个。
+
+示例 2：
+问：一支笔 4 元，买 3 支，付 20 元，应找多少？
+答：4 x 3 = 12；20 - 12 = 8。结论：应找 8 元。
+
+现在回答：
+问：&lt;你的数学问题&gt;
+答：</pre>
+<h3>模板 4：逻辑判断</h3>
+<pre style="background:var(--ink-2);border:1px solid var(--line-0);padding:22px;border-radius:4px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;">示例：
+问：所有 A 都是 B，所有 B 都是 C，那么张三（是 A）一定是 C 吗？
+推理：张三 是 A；所有 A 都是 B，所以张三 是 B；所有 B 都是 C，所以张三 是 C。
+结论：是。
+
+现在回答：
+问：&lt;你的逻辑问题&gt;
+推理：</pre>
+<p>写示例时有三条纪律：示例必须真实正确（错误的示例会被模型放大）；每个示例都要有推理过程，不能只给答案；示例数量 1-3 个足够，太多反而稀释注意力。</p>
+
+<h2>实战一：数学与数值计算</h2>
+<p>这是思维链收益最明显的场景。价格计算、比例换算、日期推算都适用。要点：把算式显式写出来。例如算「含税价 328 元，税率 13%，不含税价是多少」：</p>
+<pre style="background:var(--ink-2);border:1px solid var(--line-0);padding:22px;border-radius:4px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;">不含税价 = 含税价 / (1 + 税率)
+= 328 / 1.13
+≈ 290.27 元
+结论：约 290.27 元</pre>
+<p>如果模型在中间步骤写错，你能直接指出是哪一步错的，让它重算这一步，而不是整题重来——这是思维链带来的可调试性。</p>
+
+<h2>实战二：代码调试</h2>
+<p>让模型「读代码—定位—解释—给修复」四步走，比直接丢「帮我修 bug」可靠得多：</p>
+<pre style="background:var(--ink-2);border:1px solid var(--line-0);padding:22px;border-radius:4px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;">请按以下步骤调试，不要直接给修复代码：
+1. 先解释这段代码的预期行为；
+2. 逐段追踪实际执行路径，指出与预期不符的地方；
+3. 给出原因判断（数据问题 / 逻辑问题 / 边界问题）；
+4. 最后给出最小修复方案。
+
+代码：
+&lt;粘贴代码&gt;
+报错或异常现象：
+&lt;描述现象&gt;</pre>
+<p>给 AI Agent 做代码任务时同理：让子 Agent 输出「分析—计划—实现—自检」四段式，而不是只输出最终代码，出错时能顺着轨迹定位是哪一步的问题。</p>
+
+<h2>实战三：AI Agent 任务拆解</h2>
+<p>在 Agent 工作流里，思维链的价值是把模糊目标变成可执行步骤。给规划型 Agent 的指令可以直接要求它输出结构化的推理链：</p>
+<pre style="background:var(--ink-2);border:1px solid var(--line-0);padding:22px;border-radius:4px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;">目标：&lt;一句话目标&gt;
+限制：&lt;预算 / 时间 / 必须遵守的规则&gt;
+请输出：
+- 步骤列表：每一步做什么、依赖什么、产出什么；
+- 风险：每一步可能失败的点；
+- 兜底：失败后如何降级。
+结论先行，但步骤必须完整。</pre>
+<p>实践原则：能拆的步骤尽量拆到「一步一动、一步一验」，每步执行完校验输出再走下一步。这也和本站《AI Agent 批量修复漏洞》一文里「小步验证」的方法论一致。</p>
+
+<h2>提升准确率：自洽性采样</h2>
+<p>思维链本身是贪心解码，一次推理可能被某个错误 token 带偏。自洽性（Self-Consistency）的思路很朴素：同一个问题用同样提示词采样多次（比如 3-5 次，可调高 temperature），收集多个推理路径，取出现次数最多的答案作为最终结果。数学和逻辑题上，多数投票能把随机错误压掉一大截。</p>
+<p>实现上很简单：调用接口时设置 n（或循环调用）拿到多个补全，然后按「结论行」做文本归一化后统计投票。注意两点：一是投票对象是最终结论而不是推理过程；二是多次采样会增加 token 消耗，按精度需求和成本平衡次数。</p>
+
+<h2>五个常见陷阱</h2>
+<ul>
+<li>幻觉合理化：模型可能编造「看起来合理」的推理来圆一个错误结论，尤其当问题超出它的知识范围时。对策：强制引用可核验的事实或数据，并对结论做交叉检查；</li>
+<li>结论前置：模板里让模型「先说结论再解释」，会诱导它倒推理由。结论永远放最后；</li>
+<li>示例污染：少样本示例本身有错，或示例与目标问题领域相差太远，模型会照抄错误模式。示例宁缺毋滥；</li>
+<li>过度推理：简单事实问答（「今天星期几」「一句话概括」）不需要思维链，加了反而啰嗦、增加延迟和费用。按任务复杂度决定是否启用；</li>
+<li>格式失控：不约束格式时，模型可能把推理和结论混在一起，无法程序化解析。给 Agent 用时务必规定输出结构（如 JSON 或固定分节）。</li>
+</ul>
+
+<h2>检查单</h2>
+<p>写完提示词后按下面五条过一遍，缺哪条补哪条：</p>
+<ul>
+<li>任务是否需要多步推理？是才启用思维链；</li>
+<li>是否要求「先推理、结论放最后」？</li>
+<li>是否给了 1-3 个贴题且正确的示例？</li>
+<li>是否规定了输出格式（分节 / JSON / 固定字段）？</li>
+<li>关键数字或事实是否可核验、是否要求了依据？</li>
+</ul>
+<p>思维链是提示词工程里性价比最高的一招：不换模型、不加算力，只改提示词就能把多步任务的准确率拉上一个台阶。把上面的模板存成自己的提示词库，写 Agent 指令时按「触发—示范—约束—投票」四层取用，效果稳定可预期。</p>
+<div class="quote-block">
+        思维链四层用法：触发、示范、约束、投票。想清楚，再作答。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>
