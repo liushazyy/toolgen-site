@@ -37,3 +37,4 @@ https://toolgen.xyz/contact.html
 https://toolgen.xyz/blog/liuyao-yingqi.html
 https://toolgen.xyz/blog/bazi-paipan.html
 https://toolgen.xyz/blog/prompt-chain-of-thought.html
+https://toolgen.xyz/blog/qimen-paipan.html
