@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>梅花易数入门：起卦方法与体用生克断法</title>
+<meta name="description" content="梅花易数零基础入门：观梅占的来历、时间起卦与数字起卦完整步骤、本卦互卦变卦三身结构、体用生克断吉凶精髓、卦气旺衰与应期判断，附真实报数起卦断例与常见误区，读完即可自己起卦断事。">
+<meta property="og:title" content="梅花易数入门：起卦方法与体用生克断法">
+<meta property="og:description" content="起卦三法 + 体用生克 + 卦气旺衰，一文入门梅花易数">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/meihua-intro.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/meihua-intro.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../tools.html" data-lang="zh">工具</a><a href="../tools.html" data-lang="en">Tools</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-09</div>
+    <h1 data-lang="zh">梅花易数入门：起卦方法与体用生克断法</h1>
+    <h1 data-lang="en">Meihua Yishu intro: casting methods and ti-yong sheng-ke</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #梅花易数 #起卦 #体用生克 #周易 #易学
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      <h2>梅花易数是什么：邵雍与观梅占</h2>
+      <p>
+        梅花易数相传为北宋邵雍（邵康节）所创，名字来自他的经典案例「观梅占」：
+        某日邵雍观梅雀争枝坠地，随口起卦推知明日有女子折花伤股。与六爻、奇门不同，
+        梅花易数最大的特点是<strong>「随时随处可起卦」</strong>——不用铜钱、不摇卦，
+        时间、数字、声音、方位、外应皆可成卦。入门门槛低，特别适合初学者建立「卦感」，
+        也适合配合<a href="yijing-hexagrams-intro.html">六十四卦基础</a>一起学。
+      </p>
+      <p>
+        它断事的核心也不在复杂的六亲世应，而在<strong>体用生克</strong>：
+        一卦分体用，五行生克定吉凶，再辅以卦气旺衰与时令应期。规则少而清晰，
+        是易学入门最快、最能立刻上手的体系之一。
+      </p>
+
+      <h2>起卦第一步：时间起卦法</h2>
+      <p>
+        时间起卦是梅花易数最正统的起法，以农历年月日时为输入，分三步：
+      </p>
+      <h3>上卦：年月日之和除以八取余</h3>
+      <ul>
+        <li>年数用<strong>地支序数</strong>：子1、丑2、寅3、卯4、辰5、巳6、午7、未8、申9、酉10、戌11、亥12。</li>
+        <li>月、日直接用农历数字，例如农历八月十五日，月数取 8、日数取 15。</li>
+        <li>三者相加 ÷8，余数对应先天八卦数取上卦；余 0 则视作 8（坤卦）。</li>
+      </ul>
+      <h3>下卦：再加时辰数除以八取余</h3>
+      <p>
+        时辰也用地支序数（子时1……亥时12，晚 23 点后算次日子时）。
+        年月日时四数总和 ÷8 取余得下卦。
+      </p>
+      <h3>动爻：四数总和除以六取余</h3>
+      <p>
+        总和 ÷6 取余即动爻（爻位自下而上数，余 0 则动第六爻）。
+        动爻是整卦的「机关」：它决定哪个卦为用卦，也决定变卦怎么变。
+      </p>
+      <p>
+        先天八卦数字对照（必须背熟）：乾1、兑2、离3、震4、巽5、坎6、艮7、坤8。
+      </p>
+
+      <h2>起卦第二步：数字与外应起卦</h2>
+      <p>
+        时间之外，最常见的起卦方式是「见数起卦」，规则更灵活：
+      </p>
+      <ul>
+        <li><strong>报数起卦</strong>：让求测人随口报两个数，第一个数 ÷8 取余得上卦，第二个数 ÷8 取余得下卦，两数之和 ÷6 取余得动爻。</li>
+        <li><strong>字数起卦</strong>：一句话分成前后两段，前段字数得上卦、后段字数得下卦，总字数取动爻；单字则按笔画数拆分。</li>
+        <li><strong>外应起卦</strong>：以当下所见之物成象——见三只鸟可取离（3），见七片落叶可取艮（7）；外应起卦重在「当下、自然、不刻意」，刻意取象反而失真。</li>
+      </ul>
+
+      <h2>一卦三身：本卦、互卦、变卦</h2>
+      <p>
+        起出的卦不是孤立的，梅花易数看的是「一卦三身」：
+      </p>
+      <ul>
+        <li><strong>本卦</strong>：起卦所得之卦，代表事情现状。</li>
+        <li><strong>互卦</strong>：本卦中间四爻重新组合——二三四爻为下互卦、三四五爻为上互卦，代表事情发展过程。</li>
+        <li><strong>变卦</strong>：动爻阴阳互换后得到的新卦，代表事情的结果与归宿。</li>
+      </ul>
+      <p>
+        断卦时三者串成一条时间线：本卦看当下，互卦看过程，变卦看结局。
+      </p>
+
+      <h2>断卦核心：体用生克</h2>
+      <p>
+        体用是梅花易数断吉凶的总纲，一句话即可定大方向：
+      </p>
+      <ul>
+        <li><strong>体卦</strong>：不含动爻的卦，代表求测人自己、主方、内因。</li>
+        <li><strong>用卦</strong>：含动爻的卦，代表所测之事、对方、外因。</li>
+      </ul>
+      <p>
+        体用关系只看五行生克，一共五种：
+      </p>
+      <ul>
+        <li><strong>用生体</strong>：事情主动来助力，最吉，得财得助。</li>
+        <li><strong>体克用</strong>：自己能掌控局面，但需主动出力，吉中有劳。</li>
+        <li><strong>比和</strong>：体用五行相同，平稳顺遂，诸事可成。</li>
+        <li><strong>体生用</strong>：自己付出供养对方，主耗损、泄气，不利。</li>
+        <li><strong>用克体</strong>：外势压制自己，主困难、破败，最凶。</li>
+      </ul>
+      <p>
+        生克力度还要看<strong>旺衰</strong>：体用得月令、日辰生扶为旺，吉凶力度加倍；
+        逢休囚死绝则打个折。例如体卦为土，占于辰戌丑未月（土旺）体旺，
+        占于亥子月（水旺土弱）体衰——同样的「用克体」，旺体扛得住，衰体一克就倒。
+        五行生克关系可对照<a href="wuxing-intro.html">五行入门</a>一文复习。
+      </p>
+
+      <h2>断卦五步流程</h2>
+      <ul>
+        <li>第一步<strong>定体用</strong>：找出动爻，动爻所在卦为用，另一卦为体。</li>
+        <li>第二步<strong>辨旺衰</strong>：看体用两卦五行在月令、日辰的旺衰状态。</li>
+        <li>第三步<strong>看生克</strong>：用五句生克口诀定吉凶大方向。</li>
+        <li>第四步<strong>参互变</strong>：互卦看过程曲折，变卦看结局走向；变卦再与体卦比一次生克。</li>
+        <li>第五步<strong>断应期</strong>：应期取卦气当令之时——用生体看用卦旺之日，体克用看体旺之日，也可参考动爻数（动三爻应三日、三月等），给区间再给节点。</li>
+      </ul>
+
+      <h2>案例：报数起卦断项目合作</h2>
+      <p>
+        某日求测人报数 3、7 问合作成败，起卦如下：
+      </p>
+      <ul>
+        <li>上卦：3 ÷8 余 3，为离卦（火）；下卦：7 ÷8 余 7，为艮卦（山）；本卦为<strong>火山旅</strong>。</li>
+        <li>动爻：(3+7)=10 ÷6 余 4，第四爻动，动爻在上卦，则<strong>用卦为离（火）、体卦为艮（土）</strong>。</li>
+        <li>互卦：二三四爻为巽、三四五爻为兑，得<strong>泽风大过</strong>，主过程动荡、担子重。</li>
+        <li>变卦：离卦初爻阳变阴，上卦变艮，得<strong>艮为山</strong>，主结果归于稳定。</li>
+        <li>断：用生体（火生土），合作有外来助力，方向吉；但互卦大过提示过程周折、责任重；变卦比和，结局平稳落地。</li>
+        <li>旺衰与应期：占于酉月金旺、火囚，生体之力偏弱，应期看火当令之日（巳、午日）见分晓。</li>
+      </ul>
+
+      <h2>常见误区</h2>
+      <ul>
+        <li>起卦纠结时辰：现代生活以「当下心动那一刻」为准，过了就不算，比纠结子初子正更关键。</li>
+        <li>体用定反：动爻所在为用、静卦为体，方向一错吉凶全反。</li>
+        <li>生克不看旺衰：休囚之克与旺相之克力度天差地别，机械套口诀必误判。</li>
+        <li>只看本卦：跳过互卦与变卦，等于只看了事情的起点，看不到过程和结局。</li>
+        <li>忽略外应：断卦时当下突发的声响、物件移动都是外应，与外应相反的关键判断要再复核。</li>
+      </ul>
+
+      <h2>参考来源</h2>
+      <p>
+        《梅花易数》（旧题邵雍撰）、朱熹《周易本义》八卦取象、沈柏春《梅花易数预测学》
+        等现代著作的体用框架。本文为入门通用流程，体用分法与应期细则各流派略有差异，
+        入门后宜选定一派深入研习。
+      </p>
+      <div class="quote-block">
+        体用生克一句话定吉凶：用生体最吉，比和顺遂，用克体最凶；
+        再看互变定过程与结局——本卦看当下，互卦看过程，变卦看归宿。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>
