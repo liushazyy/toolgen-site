@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solana SPL Token 创建实战：从零发一个可交易的代币</title>
+<meta name="description" content="用 spl-token CLI 与 @solana/spl-token 在 Solana 上创建 SPL Token 的完整流程：初始化铸币厂、铸造与销毁、Metaplex 元数据、撤销权限、添加流动性。附可复制命令与代码。">
+<meta property="og:title" content="Solana SPL Token 创建实战：从零发一个可交易的代币">
+<meta property="og:description" content="铸币厂权限模型 + 元数据铸造 + 撤销权限 + 上 DEX 流动性的完整实操">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/solana-spl-token-guide.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/solana-spl-token-guide.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../tools.html" data-lang="zh">工具</a><a href="../tools.html" data-lang="en">Tools</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-09</div>
+    <h1 data-lang="zh">Solana SPL Token 创建实战：从零发一个可交易的代币</h1>
+    <h1 data-lang="en">Creating an SPL token on Solana: from zero to a tradable token</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #Solana #SPL Token #Web3 #区块链开发
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      <h2>背景</h2>
+      <p>
+        在 Solana 上发一个代币（SPL Token）本质上是调用 Token Program 创建「铸币厂（Mint）」账户。
+        和以太坊部署合约不同，SPL 代币不需要写合约：铸币、转账、销毁都是 Token Program 的内建指令，
+        你只需要决定<strong>权限模型</strong>（谁可以铸币、谁可以冻结）和<strong>元数据</strong>（名字、符号、图标）。
+        本文用 devnet 走一遍完整流程：初始化铸币厂 → 铸造 → 设置元数据 → 撤销权限 → 上 DEX 流动性。
+      </p>
+
+      <h2>准备：环境与账户</h2>
+      <p>先装好两样工具，再领测试币：</p>
+      <ul>
+        <li><strong>Solana CLI</strong>：<code>sh -c "$(curl -sSfL https://release.solana.com/v1.18.22/install)"</code>，然后 <code>solana config set --url devnet</code></li>
+        <li><strong>SPL Token CLI</strong>：<code>cargo install spl-token-cli</code>（或直接装官方预编译包）</li>
+      </ul>
+      <p>
+        生成并激活一个账户：<code>solana-keygen new -o id.json</code>，然后
+        <code>solana airdrop 2</code> 领 devnet SOL。发一个代币的账户租金 + 手续费只要 0.01 SOL 左右，
+        2 个足够反复练习。
+      </p>
+
+      <h2>创建铸币厂：先想清楚权限模型</h2>
+      <p>
+        铸币厂是代币的总账本，上面挂着两个关键权限，创建前必须想清楚：
+      </p>
+      <ul>
+        <li><strong>Mint Authority（铸币权）</strong>：谁可以凭空铸造新代币。持有它 = 可以无限增发。</li>
+        <li><strong>Freeze Authority（冻结权）</strong>：谁可以冻结某个持有者账户，使其无法转账。</li>
+      </ul>
+      <p>一条命令创建铸币厂（decimals 通常用 9，和 SOL 一致）：</p>
+      <pre><code>spl-token create-token --decimals 9 --output json</code></pre>
+      <p>
+        输出里的 <code>address</code> 就是代币的 Mint 地址。创建者默认同时拥有铸币权和冻结权——
+        <strong>上线前务必撤销</strong>（见后文），否则任何人（包括你自己）都可以无限增发，这在 DEX 上等于自杀。
+      </p>
+
+      <h2>铸造与销毁</h2>
+      <p>给自己开一个代币账户，然后铸造 1,000,000 枚：</p>
+      <pre><code>spl-token create-account &lt;MINT&gt;
+spl-token mint &lt;MINT&gt; 1000000</code></pre>
+      <p>
+        销毁就是把代币送回铸币厂：<code>spl-token burn &lt;TOKEN_ACCOUNT&gt; 数量</code>。
+        销毁后总供应量永久减少（SPL 没有重铸已销毁部分的捷径），
+        这是通缩模型的基础操作，也常用于「销毁 LP 凭证」。
+      </p>
+
+      <h2>元数据：让钱包显示名字和图标</h2>
+      <p>
+        没有元数据的代币在 Phantom / Solflare 里只显示一串 Base58 地址。
+        用 spl-token CLI 的 <code>initialize-metadata</code> 写入 Metaplex Token Metadata：
+      </p>
+      <pre><code>spl-token initialize-metadata &lt;MINT&gt; "MyToken" "MTK" "https://example.com/metadata.json"</code></pre>
+      <p>
+        其中 metadata.json 是链下 JSON，至少包含 <code>name</code>、<code>symbol</code>、
+        <code>image</code>（PNG 图标直链，建议 <code>image/&lt;尺寸&gt;</code> 格式）、
+        <code>description</code>。图标和描述要提前备好，因为<strong>元数据写入后不可修改</strong>
+        （除非你在初始化时保留 update authority）。
+      </p>
+
+      <h2>收尾：撤销权限与上 DEX</h2>
+      <p>上线前最后三步，顺序不能乱：</p>
+      <ul>
+        <li>确认总供应量已按计划铸造完毕，再 <code>spl-token authorize &lt;MINT&gt; mint --disable</code> 撤销铸币权</li>
+        <li><code>spl-token authorize &lt;MINT&gt; freeze --disable</code> 撤销冻结权（可选但推荐，去中心化程度更高）</li>
+        <li>在 Raydium / Orca 上创建池子：存入代币 + SOL 作为初始流动性，获得 LP 凭证</li>
+      </ul>
+      <p>
+        撤销后 Mint 的权限字段变成 <code>None</code>，任何人和合约都无法再增发或冻结，
+        这是代币「可信」的硬指标。很多土狗项目故意保留铸币权随时增发砸盘，
+        审查一个代币是否安全，<strong>第一眼看 Mint Authority 是否为 None</strong>。
+      </p>
+
+      <h2>常见坑检查单</h2>
+      <ul>
+        <li>decimals 选了 6 而生态默认 9：钱包显示和价格计算容易出错</li>
+        <li>元数据 update authority 没留好：上线后想换图标/官网只能重新发币</li>
+        <li>流动性池里放太少初始流动性：容易被一笔大单把价格打穿</li>
+        <li>在 mainnet 上先跑了 create-token 再想到撤销：手续费不贵但地址一旦公开就无法更换</li>
+        <li>metadata.json 的域名没上 HTTPS：钱包可能拒绝加载图标</li>
+      </ul>
+
+      <div class="quote-block">
+        SPL Token 的价值不在「发出来」，而在「权限模型设计得让持有人放心」——
+        铸币权撤销、流动性锁定、元数据可信，三者缺一不可。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+</body>
+</html>

@@ -40,3 +40,4 @@ https://toolgen.xyz/blog/prompt-chain-of-thought.html
 https://toolgen.xyz/blog/qimen-paipan.html
 https://toolgen.xyz/blog/qimen-duanju.html
 https://toolgen.xyz/blog/meihua-intro.html
+https://toolgen.xyz/blog/solana-spl-token-guide.html
