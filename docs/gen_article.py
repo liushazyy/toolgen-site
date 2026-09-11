@@ -3,7 +3,7 @@
 用法：python gen_article.py <文件名>.html "中文标题" "英文标题" "meta描述" "og描述" "标签" 正文文件路径
 自动处理：title/og:title/h1(中英)/meta desc/og desc/tags 全部替换，杜绝模板残留。
 """
-import io, sys, os, re
+import io, sys, os, re, datetime
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 BASE = os.path.dirname(os.path.abspath(__file__))
@@ -41,6 +41,11 @@ def main():
         print("模板标记未找到")
         return 1
     new = new[:start] + body + new[end:]
+    # 修正 og:url / canonical 指向新文章（模板残留的是 ai-agent-bug-hunting）
+    canon = "https://toolgen.xyz/blog/" + os.path.basename(fname)
+    new = new.replace("https://toolgen.xyz/blog/ai-agent-bug-hunting.html", canon)
+    # 修正页头日期为当前年月
+    new = re.sub(r"KNOWLEDGE · \d{4}-\d{2}", "KNOWLEDGE · " + datetime.date.today().strftime("%Y-%m"), new, count=1)
     # 校验无残留
     if old_zh in new and "og:title" in new:
         print("警告: 仍有模板残留")
