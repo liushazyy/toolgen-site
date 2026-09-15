@@ -46,3 +46,4 @@ https://toolgen.xyz/blog/liuyao-yongshen.html
 https://toolgen.xyz/blog/liuyao-xunkong-yuepo.html
 https://toolgen.xyz/blog/bazi-shensha-intro.html
 https://toolgen.xyz/blog/qimen-bamen-jiuxing.html
+https://toolgen.xyz/blog/mcp-server-from-scratch.html

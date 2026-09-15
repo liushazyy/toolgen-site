@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCP Server 开发实战：从零搭建你的第一个 AI 工具服务器</title>
+<meta name="description" content="手把手从零开发 MCP Server：安装 @modelcontextprotocol/sdk、60 行最小实现、zod 参数校验、Inspector 可视化调试、接入 Hermes 与 Claude Code，附完整可运行代码与避坑清单。">
+<meta property="og:title" content="MCP Server 开发实战：从零搭建你的第一个 AI 工具服务器">
+<meta property="og:description" content="从零开发 MCP Server 的实战指南：SDK 最小实现、Inspector 调试、接入 Hermes 与 Claude Code，附可运行代码与常见坑。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/mcp-server-from-scratch.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/mcp-server-from-scratch.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../tools.html" data-lang="zh">工具</a><a href="../tools.html" data-lang="en">Tools</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-09</div>
+    <h1 data-lang="zh">MCP Server 开发实战：从零搭建你的第一个 AI 工具服务器</h1>
+    <h1 data-lang="en">MCP Server from Scratch: Build Your First AI Tool Server</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #MCP #AI Agent #Node.js #开发实战
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      <h2>背景</h2>
+      <p>
+        MCP（Model Context Protocol）是 AI 客户端与外部工具之间的开放协议：Claude 系列、Hermes、Cursor 等
+        客户端通过它调用你写的工具，获得实时数据与执行能力。上一篇《MCP 协议入门》讲清了协议概念，
+        这篇直接动手：用 TypeScript 从零写一个可运行的 MCP Server，暴露「查 GitHub 仓库信息」工具，
+        并接入客户端调试运行。全部代码不超过 60 行，照着敲一遍就能跑。
+      </p>
+
+      <h2>环境准备</h2>
+      <p>需要 Node.js 18+（自带全局 fetch，无需安装 axios）。初始化项目并安装官方 SDK：</p>
+      <pre><code>mkdir mcp-github-info &amp;&amp; cd mcp-github-info
+npm init -y
+npm install @modelcontextprotocol/sdk zod</code></pre>
+      <p>
+        SDK 当前主版本为 1.x，下面的写法均基于 1.x。如果你装到的是 0.x 旧版，
+        先 <code>npm install @modelcontextprotocol/sdk@latest</code> 升级。
+      </p>
+
+      <h2>最小实现：一个工具服务器</h2>
+      <p>新建 <code>server.js</code>，完整代码如下：</p>
+      <pre><code>import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { z } from "zod";
+
+const server = new McpServer({
+  name: "github-info",
+  version: "1.0.0",
+});
+
+server.tool(
+  "get_repo_info",
+  "查询 GitHub 仓库的基本信息（stars、语言、描述）",
+  { owner: z.string().describe("仓库所属用户或组织"), repo: z.string().describe("仓库名") },
+  async ({ owner, repo }) =&gt; {
+    const r = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
+      headers: { "User-Agent": "mcp-github-info" },
+    });
+    if (!r.ok) {
+      return { content: [{ type: "text", text: `请求失败：HTTP ${r.status}` }] };
+    }
+    const d = await r.json();
+    return {
+      content: [{
+        type: "text",
+        text: `${d.full_name}：${d.description ?? "无描述"}，stars ${d.stargazers_count}，语言 ${d.language ?? "未知"}，最近更新 ${d.updated_at}`,
+      }],
+    };
+  },
+);
+
+const transport = new StdioServerTransport();
+await server.connect(transport);</code></pre>
+      <p>三个关键点：</p>
+      <ul>
+        <li><strong>McpServer</strong>：SDK 提供的高层封装，内部处理 JSON-RPC 2.0 握手与请求分发</li>
+        <li><strong>server.tool</strong>：注册工具，参数用 zod 描述，客户端会拿到 JSON Schema 自动补全参数</li>
+        <li><strong>StdioServerTransport</strong>：通过标准输入输出与客户端通信，适合本地直接启动</li>
+      </ul>
+
+      <h3>先手动验证一次</h3>
+      <p>不接客户端也能自测：向 stdin 发一条初始化消息，看 stdout 是否回包：</p>
+      <pre><code>echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"0.0.1"}}}' | node server.js | head -c 300</code></pre>
+      <p>能收到带 <code>serverInfo</code> 的 JSON-RPC 响应，说明服务器本身没问题。</p>
+
+      <h2>用 Inspector 可视化调试</h2>
+      <p>官方调试器 <code>@modelcontextprotocol/inspector</code> 提供网页界面，能看到工具列表、手动调用、参数校验错误：</p>
+      <pre><code>npx @modelcontextprotocol/inspector node server.js</code></pre>
+      <p>启动后浏览器打开提示的地址，左侧选工具 <code>get_repo_info</code>，填 <code>owner=octocat</code>、<code>repo=Hello-World</code> 调用，右侧会显示返回文本和耗时。参数缺省或类型错误时，Inspector 会直接展示 zod 的校验报错——这是排查「客户端说参数不对」的最快路径。</p>
+
+      <h2>接入 Hermes 与 Claude Code</h2>
+      <p>本地 stdio 型服务器通过客户端的 MCP 配置文件注册。以 Claude Code 为例，编辑 <code>.mcp.json</code>：</p>
+      <pre><code>{
+  "mcpServers": {
+    "github-info": {
+      "command": "node",
+      "args": ["/绝对路径/server.js"]
+    }
+  }
+}</code></pre>
+      <p>Hermes 在设置页的 MCP 服务器面板添加同一条「本地命令」配置即可。配好后在对话里直接问「查一下 octocat/Hello-World 有多少 star」，客户端会自动调用工具并返回实时数据。注意：<strong>修改配置后要重启客户端会话</strong>，工具列表在连接时一次性加载。</p>
+
+      <h2>进阶：参数校验与错误处理</h2>
+      <p>上面的示例已经包含 zod 校验。再补两个实战惯例：</p>
+      <ul>
+        <li><strong>限制枚举值</strong>：<code>z.enum(["stars", "issues"])</code> 让客户端只能选合法参数，减少无效调用</li>
+        <li><strong>超时保护</strong>：用 <code>AbortSignal.timeout(10000)</code> 给 fetch 加 10 秒超时，避免工具卡死整个会话</li>
+        <li><strong>结构化错误</strong>：非 2xx 时返回 <code>isError: true</code> 的 content，客户端会把它当工具失败而非正常结果</li>
+      </ul>
+
+      <h2>远程部署的注意点</h2>
+      <p>本地 stdio 适合个人使用；要给团队或线上服务用，需要换成 HTTP 传输：</p>
+      <ul>
+        <li>用 <code>StreamableHTTPServerTransport</code> 或社区框架（如 FastMCP）发布为 SSE/HTTP 端点</li>
+        <li>必须加鉴权：Bearer Token 或 OAuth，否则任何能访问端点的人都能调用你的工具</li>
+        <li>设置请求体大小与超时限制，防止恶意大 payload 打挂进程</li>
+        <li>日志写到 stderr 而不是 stdout——stdout 是协议通道，混入日志会让客户端解析失败</li>
+      </ul>
+
+      <h2>常见坑清单</h2>
+      <ul>
+        <li>SDK 版本混用：客户端与服务器协议版本不兼容时，连接会静默失败，先统一升级到最新</li>
+        <li>在工具函数里 console.log 调试：会污染 stdout 协议流，改用 console.error</li>
+        <li>忘记 serve 静态资源：MCP 的 resources 也走同一连接，没有多余 HTTP 端口可访问</li>
+        <li>长任务不回报：超过客户端超时（常见 60 秒）会被判定失败，用进度通知或拆小任务</li>
+      </ul>
+
+      <h2>结果</h2>
+      <p>
+        60 行代码，一个可用的 GitHub 查询工具服务器就完成了：本地自测通过、Inspector 验证参数校验、
+        接入客户端后对话即用。下一步可以给服务器加第二个工具（比如查询仓库 Issues），
+        或者换成 HTTP 传输部署到服务器上，把个人工具变成团队服务。
+      </p><div class="quote-block">
+        给 Agent 的任务书，要具体到「能写失败测试」才算合格；给维护者的 PR，
+        要具体到「红→绿证据链」才算专业。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span id="busuanzi_container_site_uv" style="display:none"><span data-lang="zh">访客</span><span data-lang="en">Visitors</span> <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none"><span data-lang="zh">浏览</span><span data-lang="en">Views</span> <span id="busuanzi_value_site_pv"></span></span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>
