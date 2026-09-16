@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agent 记忆系统实战：三层架构与落地实现</title>
+<meta name="description" content="从零设计 AI Agent 的记忆系统：短期工作区、长期事实库与任务工作记忆的分层方案，含文件系统实现、向量检索选型与写入去重策略，附可直接照抄的目录结构与检查清单。">
+<meta property="og:title" content="AI Agent 记忆系统实战：三层架构与落地实现">
+<meta property="og:description" content="三层记忆架构 + 文件系统落地 + 向量检索时机，附目录模板与检查清单">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/agent-memory-systems.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/agent-memory-systems.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../tools.html" data-lang="zh">工具</a><a href="../tools.html" data-lang="en">Tools</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-09</div>
+    <h1 data-lang="zh">AI Agent 记忆系统实战：三层架构与落地实现</h1>
+    <h1 data-lang="en">Agent memory systems: a three-tier architecture for lasting context</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #AI Agent #记忆系统 #向量检索 #工程实践
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      <h2>背景</h2>
+<p>大多数 Agent 跑不起来的原因不是模型不够强，而是没有记忆：每次对话都从空白开始，用户上轮说过的偏好、项目里已确认的决策、查过的资料，全部丢失。结果就是重复提问、重复犯同样的错、任务一长就前后矛盾。本文给出可直接落地的三层记忆架构，以及不需要重型基础设施的文件系统实现方案。</p>
+
+<h2>三层记忆架构</h2>
+<p>参考人类认知的分工，Agent 记忆拆成三层，每层解决一类问题，各自的读写频率和存储介质完全不同：</p>
+
+<h3>短期工作区：会话即记忆</h3>
+<p>短期工作区就是当前会话的上下文窗口。它负责：当前任务的步骤衔接、上一条工具调用的输出、用户刚做的修正。这一层不需要持久化设计，交给 LLM 的上下文窗口即可，但要养成两个习惯：一是在关键节点把结论「落盘」到长期记忆，二是用显式的状态摘要压缩上下文，避免窗口被历史对话占满。</p>
+
+<h3>长期记忆：事实与偏好</h3>
+<p>长期记忆存放跨会话稳定的事实：用户的称呼与语言偏好、项目的技术栈与目录结构、已经拍板的架构决策、常用命令的别名。这层的特征是「写入少、读取多、更新慢」，适合用结构化的纯文本或 JSON 文件存储，每条记录带时间戳和来源，方便回溯与修正。</p>
+
+<h3>任务工作记忆：可回滚的状态</h3>
+<p>任务工作记忆介于两者之间：它是某个正在进行的任务的进行时状态。典型内容是「已完成步骤列表」「待办清单」「遇到的坑」。它必须可回滚——任务中断后重启，Agent 读回这份状态就能从断点继续，而不是从头再来。落地形式是一个简单的任务清单文件，每完成一步就更新一次。</p>
+
+<h2>落地：先用文件系统，再谈向量库</h2>
+<p>很多团队一上来就上向量数据库，其实 80% 的记忆需求用文件系统就能满足，而且可读、可审计、可手工修正。只有到了「需要按语义模糊召回」的阶段，才值得引入向量检索。</p>
+
+<h3>磁盘即记忆的目录设计</h3>
+<ul>
+<li>memories/facts/：长期事实，每主题一个 .md 文件，如 user-profile.md、project-decisions.md</li>
+<li>memories/tasks/：任务工作记忆，每任务一个 .md，文件名即任务 ID</li>
+<li>memories/refs/：沉淀下来的参考资料、代码片段、命令备忘</li>
+<li>每条记录固定格式：时间戳 + 来源（哪次会话/哪个工具）+ 内容，便于追溯与去重</li>
+</ul>
+
+<h3>何时引入向量检索</h3>
+<p>当长期记忆超过几百条、且「精确匹配文件名」已经找不到需要的内容时，再考虑向量化：给 memories/refs/ 里的条目生成嵌入，检索时做 Top-K 召回再交给模型重排。务必备份原始文本文件——向量库只是索引，文本才是真相。日常单 Agent 或小团队场景，文件系统 + grep 级检索通常已经够用。</p>
+
+<h3>写入去重与更新策略</h3>
+<ul>
+<li>写入前先查：同一主题文件里是否已有等价记录，有则合并更新而非追加</li>
+<li>事实冲突时以「带证据的最新记录」为准，并保留旧记录的历史版本</li>
+<li>临时性信息（一次性的路径、一次性口令）不进长期记忆，避免污染</li>
+<li>定期压缩：把细节折叠成要点，控制每个主题文件在几十行以内</li>
+</ul>
+
+<h2>实战检查清单</h2>
+<ul>
+<li>会话开始时：先读长期记忆中的用户画像与项目决策，再开始干活</li>
+<li>每个里程碑完成时：把结论写入任务工作记忆，关键事实提升到长期记忆</li>
+<li>任务中断重启时：能从工作记忆恢复断点，并向用户说明当前进度</li>
+<li>记忆修正路径：用户说「记住/以后别这样」时，能即时写入并返回确认</li>
+<li>全链路可审计：任何一条记忆都能追溯到来源会话与写入时间</li>
+</ul>
+
+<h2>常见坑</h2>
+<ul>
+<li>把整个历史对话原样倒进记忆——噪音大于信号，检索质量急剧下降</li>
+<li>记忆只写不读：Agent 从不主动加载，库再大也是死数据</li>
+<li>不做去重：同一事实写了几十条，后期合并成本极高</li>
+<li>依赖外部记忆服务却不同步备份，服务一挂全部失忆</li>
+</ul>
+
+<h2>小结</h2>
+<p>记忆不是模型参数的附属品，而是工程产物。先分层、后落地：短期靠上下文，长期靠文本文件，跨任务靠工作记忆文件；向量检索只在语义召回成为瓶颈时引入。按这个顺序做，最小的改动就能让 Agent 从「每次重新认识你」进化到「记得住、接得上、能复盘」。</p>
+
+      <div class="quote-block">
+        记忆不是模型的参数，而是工程的产物：先分层、再落地，
+        让 Agent 从「每次重新认识你」进化到「记得住、接得上、能复盘」。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span id="busuanzi_container_site_uv" style="display:none"><span data-lang="zh">访客</span><span data-lang="en">Visitors</span> <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none"><span data-lang="zh">浏览</span><span data-lang="en">Views</span> <span id="busuanzi_value_site_pv"></span></span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>
