@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>少样本示例（Few-Shot）提示词实战：3 个例子稳定大模型输出</title>
+<meta name="description" content="用 3~5 个示例替代长篇指令：讲透 Few-Shot 让模型学格式、学风格、学推理路径的原理，示例选取三原则（边界覆盖、正反对照、难度递进），附结构化输出、文案风格、代码生成三套可直接复制的模板与检查清单。">
+<meta property="og:title" content="少样本示例（Few-Shot）提示词实战：3 个例子稳定大模型输出">
+<meta property="og:description" content="示例选取三原则 + 三套可直接复制的 Few-Shot 模板（JSON 输出/文案风格/代码生成）">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://toolgen.xyz/blog/prompt-few-shot-examples.html">
+<meta property="og:image" content="https://toolgen.xyz/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://toolgen.xyz/blog/prompt-few-shot-examples.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="bg-tex"></div>
+<div class="bg-grid"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="../index.html">
+    <div class="brand-mark"><span>玄</span></div>
+    <div>
+      <div class="brand-name">玄境科技</div>
+      <div class="brand-sub">XUANJING TECH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+    <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+    <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+    <a href="../tools.html" data-lang="zh">工具</a><a href="../tools.html" data-lang="en">Tools</a>
+    <a href="../blog.html" class="active" data-lang="zh">知识库</a><a href="../blog.html" class="active" data-lang="en">Blog</a>
+    <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+    <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <button class="mobile-btn" onclick="openMenu()" aria-label="menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="../index.html" onclick="closeMenu()" data-lang="zh">首页</a><a href="../index.html" onclick="closeMenu()" data-lang="en">Home</a>
+  <a href="../products.html" onclick="closeMenu()" data-lang="zh">产品</a><a href="../products.html" onclick="closeMenu()" data-lang="en">Products</a>
+  <a href="../services.html" onclick="closeMenu()" data-lang="zh">服务</a><a href="../services.html" onclick="closeMenu()" data-lang="en">Services</a>
+  <a href="../work.html" onclick="closeMenu()" data-lang="zh">案例</a><a href="../work.html" onclick="closeMenu()" data-lang="en">Work</a>
+  <a href="../blog.html" onclick="closeMenu()" data-lang="zh">知识库</a><a href="../blog.html" onclick="closeMenu()" data-lang="en">Blog</a>
+  <a href="../about.html" onclick="closeMenu()" data-lang="zh">关于</a><a href="../about.html" onclick="closeMenu()" data-lang="en">About</a>
+  <a href="../contact.html" onclick="closeMenu()" data-lang="zh">联系</a><a href="../contact.html" onclick="closeMenu()" data-lang="en">Contact</a>
+</div>
+
+<header class="page-head">
+  <div class="wrap">
+    <div class="kicker">KNOWLEDGE · 2026-09</div>
+    <h1 data-lang="zh">少样本示例（Few-Shot）提示词实战：3 个例子稳定大模型输出</h1>
+    <h1 data-lang="en">Few-shot prompting in practice: 3 examples for stable outputs</h1>
+    <p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--gold-0);">
+      #提示词工程 #Few-Shot #大模型 #结构化输出
+    </p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="prose" style="max-width:820px;">
+
+      <p>同样的任务，普通提示词输出飘忽不定，加上三五个示例后立刻稳定——这是 Few-Shot（少样本）提示词最直观的威力。原理并不神秘：大模型在预训练阶段就是从海量「输入→输出」示例里学会任务的，你在提示词里给示例，等于把任务映射回它最熟悉的形态。本文讲透 Few-Shot 的三个作用、示例选取三原则，并给出三套经过实战验证、可直接复制的模板与检查清单。</p>
+
+<h2>为什么几个例子比一大段指令更有效</h2>
+<p>零样本指令（Zero-Shot）要求模型「先理解规则再执行」；Few-Shot 则是直接给「照着做」的样例。两者的差距体现在三个层面：</p>
+<ul>
+<li>格式层面：示例直接定义了输出结构，模型照抄格式的成功率，远高于「请按以下 JSON 格式输出」这类文字描述</li>
+<li>风格层面：示例隐含了语气、详略与术语习惯，这些特征很难用规则穷举，但样例一看就懂</li>
+<li>推理层面：带推理过程的示例（配合思维链使用效果更佳）示范了解决问题的路径，而不只是最终答案</li>
+</ul>
+<p>一句话概括：指令规定「不能做什么」，示例规定「输出应该长什么样」。对追求稳定交付的 Agent 任务，示例是性价比最高的约束手段。</p>
+
+<h2>示例选取三原则</h2>
+
+<h3>原则一：覆盖边界，不只给标准答案</h3>
+<p>模型最容易在边界情况翻车。所以示例里至少要有一个「难例」：格式特殊、输入残缺、意图模糊或包含陷阱。一个处理过边界的示例，胜过三个顺风顺水的标准答案。</p>
+
+<h3>原则二：正反对照，明示不该做什么</h3>
+<p>在输出类任务中，给出「错误示例 + 错在哪」往往比三条正确示例更能压低错误率，尤其是格式类错误。注意两点：反例数量要少于正例；反例必须放在示例列表末尾，避免模型反向学到错误模式。</p>
+
+<h3>原则三：难度递进，从简单到复杂</h3>
+<p>示例顺序影响学习效果。先给简单样例建立基本格式，再给复杂样例展示处理手法，最后放反例收尾。这与人类学习新技能的认知顺序一致，模型同样受用。</p>
+
+<h2>实战模板一：稳定输出 JSON</h2>
+<p>结构化输出是 Agent 场景的刚需。下面的模板用「代码块包裹 + 三个正例 + 一个反例」锁定格式，比任何格式说明都可靠：</p>
+<pre><code>任务：把用户反馈整理成 JSON，字段：id、category、sentiment、summary。
+示例：
+输入：App 打开就闪退，气死了
+输出：{"id": 1, "category": "bug", "sentiment": "negative", "summary": "App 启动即闪退"}
+输入：希望能支持深色模式，晚上用太刺眼
+输出：{"id": 2, "category": "feature_request", "sentiment": "neutral", "summary": "请求支持深色模式"}
+输入：充值后余额没到账，联系客服也没回复
+输出：{"id": 3, "category": "billing", "sentiment": "negative", "summary": "充值未到账且客服无响应"}
+注意：category 只能是 bug / feature_request / billing / other 之一。
+反例（错误）：
+输入：谢谢你们，很好用
+输出：{"id": 4, "category": "praise", "sentiment": "positive"}（错误：category 枚举外 + 缺少 summary）
+正确：{"id": 4, "category": "other", "sentiment": "positive", "summary": "整体满意"} 
+现在处理：输入：账号密码都对，但一直提示登录失败</code></pre>
+<p>模板要点：枚举值在示例后单独用一行「注意」重申，反例放在最后并给出错误原因，最后用「现在处理：」显式交接任务。这套结构在大多数模型上都能把 JSON 解析失败率压到接近零。</p>
+
+<h2>实战模板二：文案风格迁移</h2>
+<p>风格是最难用规则描述的东西，但三个示例就能锁定。给客服话术或产品文案做风格统一时，用这个模板：</p>
+<pre><code>任务：把技术描述改写成「朋友式的产品文案」，语气亲切、短句为主、不使用术语。
+示例：
+技术：该模块通过 WebSocket 实现实时数据推送
+文案：数据一到，秒级送达，不用刷新页面
+技术：系统支持基于角色的细粒度权限控制
+文案：谁看什么、能改什么，你说了算
+技术：已完成数据库层的读写分离优化
+文案：人多了也不卡，读写在后台各自忙活
+现在改写：技术：本平台采用端到端加密传输协议保障数据安全</code></pre>
+<p>要点：正例之间保持同一种语气与句式节奏，难度不递增也没关系（风格任务的关键是「一致性」而非「复杂度」）。若目标风格更具体（如「小红书风」「学术风」），把示例换成对应风格的成品即可。</p>
+
+<h2>实战模板三：代码生成带约束</h2>
+<p>让模型写代码时，Few-Shot 能同时约束「用的库」「命名风格」和「错误处理」，比在提示词里写十条规则更省 token、更有效：</p>
+<pre><code>任务：写 Python 函数实现给定需求。约定：只用标准库、函数名用 snake_case、必须处理输入为空的情况。
+示例：
+需求：计算列表平均值
+代码：
+def avg(nums):
+    if not nums:
+        return 0.0
+    return sum(nums) / len(nums)
+需求：统计字符串里每个字符出现次数
+代码：
+def char_count(s):
+    counts = {}
+    for ch in s:
+        counts[ch] = counts.get(ch, 0) + 1
+    return counts
+现在写：需求：把字典按 value 降序排序，返回前 k 个键</code></pre>
+<p>模型会从示例里学到「先判空、用标准库、带类型直觉」的隐性规范，输出风格与示例高度一致，大幅减少 review 成本。</p>
+
+<h2>常见错误与避坑</h2>
+<ul>
+<li>示例与任务领域不一致：给代码任务塞文案示例，等于没给示例，务必同领域、同难度</li>
+<li>示例太长挤占上下文：每个示例控制在 2~6 行，三个好例子胜过十个啰嗦例子</li>
+<li>反例放中间：反例位置不对会让模型学到错误模式，一律放最后</li>
+<li>忘记显式交接：示例结束后用「现在处理：」或「请输出：」收尾，防止模型把示例当任务执行</li>
+<li>示例顺序随意：不按难度递进排列，模型容易在简单任务上过度复杂化</li>
+</ul>
+
+<h2>Few-Shot 检查清单</h2>
+<ul>
+<li>示例数量 3~5 个，至少包含一个边界/困难案例</li>
+<li>正例在前、反例在最后，反例标注错误原因</li>
+<li>示例与目标输出保持完全相同的格式与风格</li>
+<li>枚举、约束用一行「注意」单独重申，不依赖示例隐含</li>
+<li>结尾用「现在处理：/ 请输出：」显式交接新输入</li>
+<li>上线前用 5 组真实输入回归测试，确认输出格式稳定</li>
+<div class="quote-block">
+        给模型的示例，不是「参考答案」，而是「格式契约」：
+        三个好例子，胜过三百字规则。
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="f-brand">玄境科技 XUANJING TECH</div>
+        <div class="f-tag" data-lang="zh">一个人 + 一群 Agent，以 AI 重塑软件交付。</div>
+        <div class="f-tag" data-lang="en">One person, a fleet of agents — software delivery, reimagined.</div>
+      </div>
+      <div class="f-links">
+        <a href="../products.html" data-lang="zh">产品</a><a href="../products.html" data-lang="en">Products</a>
+        <a href="../services.html" data-lang="zh">服务</a><a href="../services.html" data-lang="en">Services</a>
+        <a href="../work.html" data-lang="zh">案例</a><a href="../work.html" data-lang="en">Work</a>
+        <a href="../blog.html" data-lang="zh">知识库</a><a href="../blog.html" data-lang="en">Blog</a>
+        <a href="../about.html" data-lang="zh">关于</a><a href="../about.html" data-lang="en">About</a>
+        <a href="../contact.html" data-lang="zh">联系</a><a href="../contact.html" data-lang="en">Contact</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 玄境科技 Xuanjing Tech · toolgen.xyz</span>
+      <span id="busuanzi_container_site_uv" style="display:none"><span data-lang="zh">访客</span><span data-lang="en">Visitors</span> <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none"><span data-lang="zh">浏览</span><span data-lang="en">Views</span> <span id="busuanzi_value_site_pv"></span></span>
+      <span data-lang="zh">沪ICP备 · 备案中</span><span data-lang="en">ICP FILING IN PROGRESS</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleLang() {
+  const html = document.documentElement;
+  const btn = document.getElementById('langBtn');
+  if (html.getAttribute('data-lang') === 'en') {
+    html.setAttribute('data-lang', 'zh'); btn.textContent = 'EN'; localStorage.setItem('lang', 'zh');
+  } else {
+    html.setAttribute('data-lang', 'en'); btn.textContent = '中文'; localStorage.setItem('lang', 'en');
+  }
+}
+(function () {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') {
+    document.documentElement.setAttribute('data-lang', 'en');
+    document.getElementById('langBtn').textContent = '中文';
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+})();
+function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

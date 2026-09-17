@@ -48,3 +48,4 @@ https://toolgen.xyz/blog/bazi-shensha-intro.html
 https://toolgen.xyz/blog/qimen-bamen-jiuxing.html
 https://toolgen.xyz/blog/mcp-server-from-scratch.html
 https://toolgen.xyz/blog/agent-memory-systems.html
+https://toolgen.xyz/blog/prompt-few-shot-examples.html
