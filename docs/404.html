@@ -24,6 +24,25 @@
 </section>
 <script>
 if (localStorage.getItem('lang') === 'en') document.documentElement.setAttribute('data-lang', 'en');
+// Redirect known stale /tools/* URLs (old site structure, still indexed by search engines) to the tools hub.
+(function () {
+  try {
+    var p = location.pathname;
+    var map = {
+      '/tools/agent-tool-registry.html': '/tools.html',
+      '/tools/character-counter.html': '/tools.html',
+      '/tools/email-validator.html': '/tools.html',
+      '/tools/html-formatter.html': '/tools.html',
+      '/tools/llm-cost-calculator.html': '/tools.html',
+      '/tools/lorem-ipsum-generator.html': '/tools.html',
+      '/tools/prompt-templates.html': '/tools.html',
+      '/tools/prompt-version-control.html': '/tools.html',
+      '/tools/word-unscrambler.html': '/tools.html'
+    };
+    if (map[p]) { location.replace(map[p]); return; }
+    if (p.indexOf('/tools/') === 0 && p.slice(-5) === '.html') { location.replace('/tools.html'); }
+  } catch (e) {}
+})();
 </script>
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 </body>
